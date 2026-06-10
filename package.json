@@ -1,0 +1,31 @@
+{
+  "name": "stock-trading",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "axios": "^1.17.0",
+    "bcrypt": "^6.0.0",
+    "bcryptjs": "^3.0.3",
+    "jsonwebtoken": "^9.0.3",
+    "lucide-react": "^1.17.0",
+    "mongodb": "^7.2.0",
+    "mongoose": "^9.6.3",
+    "next": "16.2.7",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "react-hot-toast": "^2.6.0",
+    "recharts": "^3.8.1",
+    "zustand": "^5.0.14"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "babel-plugin-react-compiler": "1.0.0",
+    "daisyui": "^5.5.23",
+    "tailwindcss": "^4"
+  }
+}
