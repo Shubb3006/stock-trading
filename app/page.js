@@ -15,6 +15,8 @@ export default function Home() {
     getStocks();
   }, [getStocks]);
 
+  console.log("hi")
+
   return (
     <main className="min-h-screen">
       {/* Hero Section */}
