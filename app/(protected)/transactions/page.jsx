@@ -17,7 +17,7 @@ const page = () => {
   return (
     <div className="min-h-[calc(100vh-64px)] bg-base-200">
       <div className="max-w-6xl mx-auto p-6">
-        <div className="mb-8 flex justify-between items-center">
+        <div className="mb-8 flex flex-col md:flex-row gap-4 justify-between items-center">
           <h1 className="text-4xl font-bold">My Transactions</h1>
           <div className="text-right">
             <p className="text-sm opacity-70">Total Realized P&L</p>

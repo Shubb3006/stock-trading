@@ -5,6 +5,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { Menu, TrendingUp, X } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -25,10 +26,8 @@ const Navbar = () => {
         : "hover:text-primary"
     }`;
 
-  const stocksActive = pathname.startsWith("/stocks");
-
   return (
-    <header className="bg-base-100 sticky top-0 z-50">
+    <header className="sticky top-0 z-50 bg-base-100/80 backdrop-blur-md">
       <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 text-xl font-bold">
@@ -104,70 +103,78 @@ const Navbar = () => {
           {isOpen ? <X /> : <Menu />}
         </button>
       </div>
-      {isOpen && (
-        <div className="md:hidden border-t bg-base-100 shadow-lg">
-          <ul
-            className="flex flex-col gap-3 justify-center items-center p-4"
-            onClick={() => setIsOpen((prev) => !prev)}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.2 }}
+            className="md:hidden fixed top-16 left-0 w-full bg-base-100 shadow-lg z-50"
           >
-            <li>
-              <Link href="/stocks" className={linkClass("/stocks")}>
-                Stocks
-              </Link>
-            </li>
+            <ul
+              className="flex flex-col gap-3 justify-center items-center p-4 "
+              onClick={() => setIsOpen(false)}
+            >
+              <li>
+                <Link href="/stocks" className={linkClass("/stocks")}>
+                  Stocks
+                </Link>
+              </li>
 
-            {authUser ? (
-              <>
-                <li>
-                  <Link href="/dashboard" className={linkClass("/dashboard")}>
-                    Dashboard
-                  </Link>
-                </li>
+              {authUser ? (
+                <>
+                  <li>
+                    <Link href="/dashboard" className={linkClass("/dashboard")}>
+                      Dashboard
+                    </Link>
+                  </li>
 
-                <li>
-                  <Link
-                    href="/transactions"
-                    className={linkClass("/transactions")}
-                  >
-                    My Transactions
-                  </Link>
-                </li>
+                  <li>
+                    <Link
+                      href="/transactions"
+                      className={linkClass("/transactions")}
+                    >
+                      My Transactions
+                    </Link>
+                  </li>
 
-                <li className="hidden md:block">
-                  <span className="font-medium">
-                    Hi,{" "}
-                    {authUser.name.charAt(0).toUpperCase() +
-                      authUser.name.slice(1).toLowerCase()}
-                  </span>
-                </li>
+                  <li>
+                    <span className="font-medium">
+                      Hi,{" "}
+                      {authUser.name.charAt(0).toUpperCase() +
+                        authUser.name.slice(1).toLowerCase()}
+                    </span>
+                  </li>
 
-                <li>
-                  <button
-                    onClick={handleLogout}
-                    className="btn btn-sm btn-error"
-                  >
-                    Logout
-                  </button>
-                </li>
-              </>
-            ) : (
-              <>
-                <li>
-                  <Link href="/login" className="btn btn-sm btn-ghost">
-                    Login
-                  </Link>
-                </li>
+                  <li>
+                    <button
+                      onClick={handleLogout}
+                      className="btn btn-sm btn-error"
+                    >
+                      Logout
+                    </button>
+                  </li>
+                </>
+              ) : (
+                <>
+                  <li>
+                    <Link href="/login" className="btn btn-sm btn-ghost">
+                      Login
+                    </Link>
+                  </li>
 
-                <li>
-                  <Link href="/signup" className="btn btn-sm btn-primary">
-                    Sign Up
-                  </Link>
-                </li>
-              </>
-            )}
-          </ul>
-        </div>
-      )}
+                  <li>
+                    <Link href="/signup" className="btn btn-sm btn-primary">
+                      Sign Up
+                    </Link>
+                  </li>
+                </>
+              )}
+            </ul>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 };
