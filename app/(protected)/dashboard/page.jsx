@@ -1,5 +1,6 @@
 "use client";
 import PortfolioChart from "@/app/components/Portfolio";
+import DashboardSkeleton from "@/app/components/skeletons/DashboardSkeleton";
 import { useHoldingStore } from "@/store/useHoldingStore";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
@@ -33,12 +34,7 @@ const page = () => {
   console.log(percentage.toFixed(2));
 
   if (isFetchingHoldings) {
-    return (
-      <div className="min-h-[calc(100vh-64px)] flex items-center justify-center flex-col">
-        <Loader2 className="animate-spin" />
-        <p>Fetching Your Holdings...</p>
-      </div>
-    );
+    return <DashboardSkeleton />;
   }
 
   return (

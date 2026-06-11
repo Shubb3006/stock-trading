@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import StockCard from "../components/stocks/StockCard";
 import { Loader2 } from "lucide-react";
 import StockSearch from "../components/stocks/StockSearch";
+import StocksPageSkeleton from "../components/skeletons/StockPageSkeleton";
 
 const page = () => {
   const { stocks, fetchingStocks, getStocks } = useStockStore();
@@ -12,6 +13,8 @@ const page = () => {
   useEffect(() => {
     getStocks();
   }, [getStocks]);
+
+  if (fetchingStocks) return <StocksPageSkeleton />;
 
   const filteredStocks = stocks.filter(
     (stock) =>
@@ -29,12 +32,7 @@ const page = () => {
       </div>
       <StockSearch search={search} setSearch={setSearch} />
       <div className="max-w-7xl bg-base-100 mx-auto px-4 py-12">
-        {fetchingStocks ? (
-          <div className="flex flex-col items-center justify-center py-20 gap-3">
-            <Loader2 className="w-8 h-8 animate-spin" />
-            <p className="text-sm text-gray-500">Fetching stocks...</p>
-          </div>
-        ) : filteredStocks.length === 0 ? (
+        {filteredStocks.length === 0 ? (
           <div className="text-center py-10">
             <p className="text-lg font-medium">No stocks found</p>
             <p className="text-gray-500">Try another search term.</p>

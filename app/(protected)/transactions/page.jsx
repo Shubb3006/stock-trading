@@ -1,4 +1,5 @@
 "use client";
+import DashboardSkeleton from "@/app/components/skeletons/DashboardSkeleton";
 import { useTransactionsStore } from "@/store/useTransactionsStore";
 import { Loader2 } from "lucide-react";
 import React, { useEffect } from "react";
@@ -9,6 +10,8 @@ const page = () => {
   useEffect(() => {
     getAllTransactions();
   }, []);
+
+  if (isFetchingTransactions) return <DashboardSkeleton />;
   console.log(transactions);
   const totalRealizedPL = transactions
     .filter((t) => t.type === "SELL")
@@ -31,97 +34,88 @@ const page = () => {
             </p>
           </div>
         </div>
-        {isFetchingTransactions ? (
-          <div className="min-h-[calc(100vh-300px)] flex items-center justify-center">
-            <Loader2 className="animate-spin" />
-          </div>
-        ) : (
-          <div className="card bg-base-100 shadow-lg">
-            <div className="card-body">
-              {transactions.length === 0 ? (
-                <div className="text-center py-10">
-                  <p className="text-lg font-semibold">No Transactions Yet</p>
-                  <p className="opacity-70">
-                    Buy or sell stocks to see your trading history.
-                  </p>
-                </div>
-              ) : (
-                <div className="overflow-x-auto">
-                  <table className="table">
-                    <thead>
-                      <tr>
-                        <th>Type</th>
-                        <th>Stock</th>
-                        <th>Qty</th>
-                        <th>Price</th>
-                        <th>Total</th>
-                        <th>Realized P/L</th>
-                        <th>Date</th>
-                      </tr>
-                    </thead>
 
-                    <tbody>
-                      {transactions.map((t) => (
-                        <tr key={t._id}>
-                          <td>
+        <div className="card bg-base-100 shadow-lg">
+          <div className="card-body">
+            {transactions.length === 0 ? (
+              <div className="text-center py-10">
+                <p className="text-lg font-semibold">No Transactions Yet</p>
+                <p className="opacity-70">
+                  Buy or sell stocks to see your trading history.
+                </p>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="table">
+                  <thead>
+                    <tr>
+                      <th>Type</th>
+                      <th>Stock</th>
+                      <th>Qty</th>
+                      <th>Price</th>
+                      <th>Total</th>
+                      <th>Realized P/L</th>
+                      <th>Date</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    {transactions.map((t) => (
+                      <tr key={t._id}>
+                        <td>
+                          <span
+                            className={`badge ${
+                              t.type === "BUY" ? "badge-success" : "badge-error"
+                            }`}
+                          >
+                            {t.type}
+                          </span>
+                        </td>
+
+                        <td>
+                          <div>
+                            <p className="font-bold">{t.stockId.symbol}</p>
+                            <p className="text-xs opacity-70">
+                              {t.stockId.name}
+                            </p>
+                          </div>
+                        </td>
+
+                        <td>{t.quantity}</td>
+                        <td>₹{t.price.toLocaleString()}</td>
+                        <td>₹{t.totalAmount.toLocaleString()}</td>
+                        <td>
+                          {t.type === "SELL" ? (
                             <span
-                              className={`badge ${
-                                t.type === "BUY"
-                                  ? "badge-success"
-                                  : "badge-error"
-                              }`}
+                              className={
+                                t.realizedPnl >= 0
+                                  ? "text-success font-bold"
+                                  : "text-error font-bold"
+                              }
                             >
-                              {t.type}
+                              {t.realizedPnl >= 0 ? "+" : ""}₹
+                              {t.realizedPnl.toLocaleString()}
                             </span>
-                          </td>
-
-                          <td>
-                            <div>
-                              <p className="font-bold">{t.stockId.symbol}</p>
-                              <p className="text-xs opacity-70">
-                                {t.stockId.name}
-                              </p>
-                            </div>
-                          </td>
-
-                          <td>{t.quantity}</td>
-                          <td>₹{t.price.toLocaleString()}</td>
-                          <td>₹{t.totalAmount.toLocaleString()}</td>
-                          <td>
-                            {t.type === "SELL" ? (
-                              <span
-                                className={
-                                  t.realizedPnl >= 0
-                                    ? "text-success font-bold"
-                                    : "text-error font-bold"
-                                }
-                              >
-                                {t.realizedPnl >= 0 ? "+" : ""}₹
-                                {t.realizedPnl.toLocaleString()}
-                              </span>
-                            ) : (
-                              "-"
-                            )}
-                          </td>
-                          {/* <td>
+                          ) : (
+                            "-"
+                          )}
+                        </td>
+                        {/* <td>
                             {new Date(t.createdAt).toLocaleDateString("en-IN", {
                               day: "numeric",
                               month: "short",
                               year: "numeric",
                             })}
                           </td> */}
-                          <td>
-                            {new Date(t.createdAt).toLocaleString("en-IN")}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </div>
+                        <td>{new Date(t.createdAt).toLocaleString("en-IN")}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
     </div>
   );
