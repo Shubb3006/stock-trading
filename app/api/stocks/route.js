@@ -1,4 +1,5 @@
 import { connectDB } from "@/lib/db";
+import PriceHistory from "@/models/priceHistory";
 import Stock from "@/models/stock.model";
 import { NextResponse } from "next/server";
 
@@ -49,11 +50,17 @@ export async function GET(req) {
     try {
         await connectDB();
         const stocks=await Stock.find();
-        stocks.forEach((stock) => {
-          stock.currentPrice += (Math.random() - 0.5) * 2;
-        });
-        
-        await Promise.all(stocks.map((s) => s.save()));
+        for(const stock of stocks){
+          stock.currentPrice = Number(
+            (stock.currentPrice + (Math.random() - 0.5) * 1).toFixed(2)
+          );
+          await stock.save();
+
+          await PriceHistory.create({
+            stockId:stock._id,
+            price:stock.currentPrice
+          })
+        }
         return NextResponse.json({
             status: "success",
             stocks,

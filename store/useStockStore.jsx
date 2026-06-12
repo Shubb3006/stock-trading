@@ -8,6 +8,27 @@ export const useStockStore = create((set) => ({
   fetchingStocks: false,
   refreshingStocks: false,
   fetchingStockDetail: false,
+
+  priceHistory: [],
+  fetchingHistory: false,
+
+  getPriceHistory: async (symbol) => {
+    try {
+      set({
+        fethcingHistory: true,
+      })
+      const res = await axiosInstance.get(`/stocks/${symbol}/history`);
+
+      set({
+        priceHistory: res.data.history,
+      });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      set({ fetchingHistory: false });
+    }
+  },
+
   getStocks: async () => {
     try {
       set({ fetchingStocks: true });
@@ -20,7 +41,11 @@ export const useStockStore = create((set) => ({
       set({ fetchingStocks: false });
     }
   },
-  
+  clearPriceHistory: () =>
+    set({
+      priceHistory: [],
+    }),
+
   refreshStocks: async () => {
     const res = await axiosInstance.get("/stocks");
 

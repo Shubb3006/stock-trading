@@ -7,10 +7,11 @@ import StockSearch from "../components/stocks/StockSearch";
 import StocksPageSkeleton from "../components/skeletons/StockPageSkeleton";
 
 const page = () => {
-  const { stocks, fetchingStocks, getStocks, refreshStocks } = useStockStore();
+  const { stocks, fetchingStocks, getStocks, refreshStocks,} = useStockStore();
   const [search, setSearch] = useState("");
   useEffect(() => {
     getStocks();
+   
 
     const interval = setInterval(() => {
       refreshStocks();

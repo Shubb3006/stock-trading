@@ -1,14 +1,17 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Building2, IndianRupee, Loader2, TrendingUp } from "lucide-react";
 import { useHoldingStore } from "@/store/useHoldingStore";
 import { useAuthStore } from "@/store/useAuthStore";
 import Link from "next/link";
 import { useStockStore } from "@/store/useStockStore";
 import StockPrice from "./StockPrice";
+import StockChart from "./StockChart";
 
 const StockDetail = ({ stock }) => {
+  const [range, setRange] = useState("1D");
+
   const [quantity, setQuantity] = useState(1);
   const {
     buyStock,
@@ -19,12 +22,15 @@ const StockDetail = ({ stock }) => {
     getHoldings,
     clearHoldings,
   } = useHoldingStore();
-  const { stocks, getStocks, refreshStocks } = useStockStore();
-
-  const getLivePrice = (stockId) => {
-    const liveStock = stocks.find((s) => s._id === stockId);
-    return liveStock?.currentPrice || 0;
-  };
+  const {
+    stocks,
+    getStocks,
+    refreshStocks,
+    getPriceHistory,
+    priceHistory,
+    fethcingHistory,
+    clearPriceHistory,
+  } = useStockStore();
 
   const { authUser } = useAuthStore();
   useEffect(() => {
@@ -34,23 +40,25 @@ const StockDetail = ({ stock }) => {
       clearHoldings();
     }
   }, [authUser, clearHoldings, getHoldings]);
+
   useEffect(() => {
     getStocks();
+    getPriceHistory(stock.symbol);
     const interval = setInterval(() => {
       refreshStocks();
-    }, 1000); // every 5 seconds
+      getPriceHistory(stock.symbol);
+    }, 1000);
 
     return () => clearInterval(interval);
   }, [getStocks, refreshStocks]);
+  
 
   const liveStock = stocks.find((s) => s._id === stock._id) || stock;
-  console.log(stock);
 
   const isHoldingThisStock = holdings.find(
     (h) => h.stockId._id.toString() === stock._id.toString()
   );
 
-  //already own stock
   const investedAmount = isHoldingThisStock
     ? isHoldingThisStock.quantity * isHoldingThisStock.averageBuyPrice
     : 0;
@@ -69,6 +77,45 @@ const StockDetail = ({ stock }) => {
   async function handleSell() {
     await sellStock({ quantity, stockId: stock._id });
   }
+
+  // const chartData = priceHistory.map((item) => ({
+  //   time: new Date(item.createdAt).toLocaleTimeString(),
+  //   price: Number(item.price),
+  // }));
+  const chartData = priceHistory.map((item) => ({
+    time: item.createdAt,
+    price: Number(item.price),
+  }));
+
+  const filteredData = useMemo(() => {
+    const now = new Date();
+
+    return chartData.filter((item) => {
+      const date = new Date(item.time);
+
+      switch (range) {
+        case "1HR":
+          return now - date <= 60 * 60 * 1000;
+        case "1D":
+          return now - date <= 24 * 60 * 60 * 1000;
+
+        case "5D":
+          return now - date <= 5 * 24 * 60 * 60 * 1000;
+
+        case "1M":
+          return now - date <= 30 * 24 * 60 * 60 * 1000;
+
+        case "1Y":
+          return now - date <= 365 * 24 * 60 * 60 * 1000;
+
+        case "5Y":
+          return now - date <= 5 * 365 * 24 * 60 * 60 * 1000;
+
+        default:
+          return true;
+      }
+    });
+  }, [chartData, range]);
 
   return (
     <div className="min-h-[calc(100vh-64px)] max-w-6xl mx-auto px-4 py-10">
@@ -97,6 +144,23 @@ const StockDetail = ({ stock }) => {
             </div>
           </div>
         </div>
+        <div className="flex justify-end px-4 mb-2">
+          <div className="flex gap-2">
+            {["1HR", "1D", "5D", "1M", "1Y", "5Y"].map((r) => (
+              <button
+                key={r}
+                onClick={() => setRange(r)}
+                className={`btn btn-sm ${
+                  range === r ? "btn-primary" : "btn-ghost"
+                }`}
+              >
+                {r}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <StockChart data={filteredData} range={range} />
       </div>
 
       {/* Stats */}
