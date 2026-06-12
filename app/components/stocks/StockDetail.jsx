@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useStockStore } from "@/store/useStockStore";
 import StockPrice from "./StockPrice";
 import StockChart from "./StockChart";
+import StockChartSkeleton from "../skeletons/StockChartSkeleton";
 
 const StockDetail = ({ stock }) => {
   const [range, setRange] = useState("1D");
@@ -28,11 +29,12 @@ const StockDetail = ({ stock }) => {
     refreshStocks,
     getPriceHistory,
     priceHistory,
-    fethcingHistory,
+    fetchingHistory,
     clearPriceHistory,
   } = useStockStore();
 
   const { authUser } = useAuthStore();
+
   useEffect(() => {
     if (authUser) {
       getHoldings();
@@ -41,17 +43,23 @@ const StockDetail = ({ stock }) => {
     }
   }, [authUser, clearHoldings, getHoldings]);
 
+  // useEffect(() => {
+  //   clearPriceHistory();
+  //   getPriceHistory(stock.symbol);
+  // }, [stock.symbol]);
   useEffect(() => {
+    clearPriceHistory();
+
     getStocks();
     getPriceHistory(stock.symbol);
+
     const interval = setInterval(() => {
       refreshStocks();
       getPriceHistory(stock.symbol);
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [getStocks, refreshStocks]);
-  
+  }, [stock.symbol]);
 
   const liveStock = stocks.find((s) => s._id === stock._id) || stock;
 
@@ -160,7 +168,7 @@ const StockDetail = ({ stock }) => {
           </div>
         </div>
 
-        <StockChart data={filteredData} range={range} />
+        <StockChart key={stock.symbol} data={filteredData} range={range} />
       </div>
 
       {/* Stats */}

@@ -18,13 +18,6 @@ const Navbar = () => {
     const success = await logout();
     if (success) router.push("/");
   }
-
-  
-  console.log("navabr")
-  console.log("navabr")
-  
-
-
   const linkClass = (path) =>
     `transition-colors px-3 py-2 rounded-full duration-300 ${
       pathname === path || pathname.startsWith(path)

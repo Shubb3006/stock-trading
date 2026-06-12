@@ -15,7 +15,7 @@ export const useStockStore = create((set) => ({
   getPriceHistory: async (symbol) => {
     try {
       set({
-        fethcingHistory: true,
+        fetchingHistory: true,
       })
       const res = await axiosInstance.get(`/stocks/${symbol}/history`);
 
@@ -41,10 +41,13 @@ export const useStockStore = create((set) => ({
       set({ fetchingStocks: false });
     }
   },
-  clearPriceHistory: () =>
+
+  clearPriceHistory:async()=>{
     set({
       priceHistory: [],
     }),
+    console.log("sd");
+  },
 
   refreshStocks: async () => {
     const res = await axiosInstance.get("/stocks");
