@@ -16,6 +16,7 @@ const page = () => {
     return liveStock?.currentPrice || 0;
   };
   useEffect(() => {
+    if(holdings.length===0)
     getHoldings();
   }, [getHoldings]);
 

@@ -1,6 +1,7 @@
 import axiosInstance from "@/lib/axios";
 import toast from "react-hot-toast";
 import { create } from "zustand";
+import { useTransactionsStore } from "./useTransactionsStore";
 
 export const useHoldingStore = create((set) => ({
   holdings: [],
@@ -27,7 +28,6 @@ export const useHoldingStore = create((set) => ({
       set({ isBuyingStock: true });
       const res = await axiosInstance.post("/holding/buy", data);
       const newHolding = res.data.holding;
-      console.log(newHolding);
       set((state) => {
         const existingIndex = state.holdings.findIndex(
           (h) => h._id === newHolding._id
@@ -44,6 +44,7 @@ export const useHoldingStore = create((set) => ({
           };
         }
       });
+      await useTransactionsStore.getState().getAllTransactions();
 
       toast.success("Stock Bought");
     } catch (error) {
@@ -75,6 +76,7 @@ export const useHoldingStore = create((set) => ({
 
         return { holdings: updated };
       });
+      await useTransactionsStore.getState().getAllTransactions();
       toast.success("Stock sold");
     } catch (error) {
       toast.error(error.response?.data?.message || "Something went wrong");

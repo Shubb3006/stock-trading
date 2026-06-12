@@ -2,6 +2,7 @@ import axiosInstance from "@/lib/axios";
 import toast from "react-hot-toast";
 import { create } from "zustand";
 import { useHoldingStore } from "./useHoldingStore";
+import { useRouter } from "next/navigation";
 
 export const useAuthStore = create((set) => ({
   authUser: null,

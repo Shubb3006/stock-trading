@@ -7,18 +7,17 @@ import StockSearch from "../components/stocks/StockSearch";
 import StocksPageSkeleton from "../components/skeletons/StockPageSkeleton";
 
 const page = () => {
-  const { stocks, fetchingStocks, getStocks, refreshStocks,} = useStockStore();
+  const { stocks, fetchingStocks, getStocks, refreshStocks } = useStockStore();
   const [search, setSearch] = useState("");
   useEffect(() => {
-    getStocks();
-   
+    if (stocks.length === 0) getStocks();
 
     const interval = setInterval(() => {
       refreshStocks();
     }, 5000); // every 5 seconds
 
     return () => clearInterval(interval);
-  }, [getStocks,refreshStocks]);
+  }, [getStocks, refreshStocks]);
 
   if (fetchingStocks) return <StocksPageSkeleton />;
 

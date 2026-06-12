@@ -7,7 +7,8 @@ import React, { useEffect } from "react";
 const page = () => {
   const { getAllTransactions, transactions, isFetchingTransactions } =
     useTransactionsStore();
-  useEffect(() => {
+    useEffect(() => {
+      if(transactions.length===0)
     getAllTransactions();
   }, []);
 
