@@ -30,6 +30,7 @@ const StockDetail = ({ stock }) => {
     getPriceHistory,
     priceHistory,
     fetchingHistory,
+    refreshPriceHistory,
     clearPriceHistory,
   } = useStockStore();
 
@@ -55,8 +56,8 @@ const StockDetail = ({ stock }) => {
 
     const interval = setInterval(() => {
       refreshStocks();
-      getPriceHistory(stock.symbol);
-    }, 1000);
+      refreshPriceHistory(stock.symbol);
+    }, 5000);
 
     return () => clearInterval(interval);
   }, [stock.symbol]);
@@ -168,7 +169,11 @@ const StockDetail = ({ stock }) => {
           </div>
         </div>
 
-        <StockChart key={stock.symbol} data={filteredData} range={range} />
+        {!fetchingHistory ? (
+          <StockChart key={stock.symbol} data={filteredData} range={range} />
+        ) : (
+          <StockChartSkeleton />
+        )}
       </div>
 
       {/* Stats */}

@@ -4,7 +4,6 @@ import { useParams } from "next/navigation";
 import React, { useEffect } from "react";
 import { useStockStore } from "@/store/useStockStore";
 import StockDetail from "@/app/components/stocks/StockDetail";
-import { Loader2 } from "lucide-react";
 import StockDetailSkeleton from "@/app/components/skeletons/StockDetailSkeleton";
 
 export default function Page() {
