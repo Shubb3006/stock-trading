@@ -8,12 +8,17 @@ import { Loader2 } from "lucide-react";
 import { useAuthStore } from "@/store/useAuthStore";
 
 export default function Home() {
-  const { getStocks, stocks,fetchingStocks } = useStockStore();
+  const { getStocks, stocks,fetchingStocks,refreshStocks } = useStockStore();
   const {authUser}=useAuthStore();
-
-  useEffect(() => {
+ useEffect(() => {
     getStocks();
-  }, [getStocks]);
+
+    const interval = setInterval(() => {
+      refreshStocks();
+    }, 1000); // every 5 seconds
+
+    return () => clearInterval(interval);
+  }, [getStocks,refreshStocks]);
 
   return (
     <main className="min-h-screen">

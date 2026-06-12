@@ -49,11 +49,16 @@ export async function GET(req) {
     try {
         await connectDB();
         const stocks=await Stock.find();
+        stocks.forEach((stock) => {
+          stock.currentPrice += (Math.random() - 0.5) * 2;
+        });
+        
+        await Promise.all(stocks.map((s) => s.save()));
         return NextResponse.json({
             status: "success",
             stocks,
         },{status:200})
-        
+
     } catch (error) {
         return NextResponse.json(
             {

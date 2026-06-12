@@ -2,20 +2,33 @@
 import PortfolioChart from "@/app/components/Portfolio";
 import DashboardSkeleton from "@/app/components/skeletons/DashboardSkeleton";
 import { useHoldingStore } from "@/store/useHoldingStore";
+import { useStockStore } from "@/store/useStockStore";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import React, { useEffect } from "react";
 
 const page = () => {
   const { holdings, getHoldings, isFetchingHoldings } = useHoldingStore();
+  const { getStocks, refreshStocks, stocks } = useStockStore();
+
+  const getLivePrice = (stockId) => {
+    const liveStock = stocks.find((s) => s._id === stockId);
+    return liveStock?.currentPrice || 0;
+  };
   useEffect(() => {
     getHoldings();
   }, [getHoldings]);
 
-  const allocationData = holdings.map((holding) => ({
-    stock: holding.stockId.symbol,
-    value: holding.quantity * holding.stockId.currentPrice,
-  }));
+  useEffect(() => {
+    getStocks();
+
+    const interval = setInterval(() => {
+      refreshStocks();
+    }, 1000); // every 5 seconds
+
+    return () => clearInterval(interval);
+  }, [getStocks, refreshStocks]);
+  console.log(holdings);
 
   const investedAmount = holdings.reduce(
     (acc, h) => acc + h.quantity * h.averageBuyPrice,
@@ -23,7 +36,7 @@ const page = () => {
   );
 
   const currentValue = holdings.reduce(
-    (acc, h) => acc + h.quantity * h.stockId.currentPrice,
+    (acc, h) => acc + h.quantity * getLivePrice(h.stockId._id),
     0
   );
   console.log(investedAmount);
@@ -113,12 +126,12 @@ const page = () => {
                   <tbody>
                     {holdings.map((holding) => {
                       const stockPnl =
-                        (holding.stockId.currentPrice -
+                        (getLivePrice(holding.stockId._id) -
                           holding.averageBuyPrice) *
                         holding.quantity;
 
                       const stockPercentage =
-                        ((holding.stockId.currentPrice -
+                        ((getLivePrice(holding.stockId._id) -
                           holding.averageBuyPrice) /
                           holding.averageBuyPrice) *
                         100;
@@ -141,7 +154,8 @@ const page = () => {
                           <td>₹{holding.averageBuyPrice.toLocaleString()}</td>
 
                           <td>
-                            ₹{holding.stockId.currentPrice.toLocaleString()}
+                            ₹
+                            {getLivePrice(holding.stockId._id).toLocaleString()}
                           </td>
 
                           <td

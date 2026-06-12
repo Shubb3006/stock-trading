@@ -3,22 +3,21 @@ import { useStockStore } from "@/store/useStockStore";
 import React, { useState } from "react";
 import { useEffect } from "react";
 import StockCard from "../components/stocks/StockCard";
-import { Loader2 } from "lucide-react";
 import StockSearch from "../components/stocks/StockSearch";
 import StocksPageSkeleton from "../components/skeletons/StockPageSkeleton";
 
 const page = () => {
-  const { stocks, fetchingStocks, getStocks } = useStockStore();
+  const { stocks, fetchingStocks, getStocks, refreshStocks } = useStockStore();
   const [search, setSearch] = useState("");
   useEffect(() => {
     getStocks();
-  
+
     const interval = setInterval(() => {
-      getStocks();
-    }, 5000); // every 5 seconds
-  
+      refreshStocks();
+    }, 1000); // every 5 seconds
+
     return () => clearInterval(interval);
-  }, [getStocks]);
+  }, [getStocks,refreshStocks]);
 
   if (fetchingStocks) return <StocksPageSkeleton />;
 

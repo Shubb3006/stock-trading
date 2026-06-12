@@ -5,8 +5,11 @@ import { Building2, IndianRupee, Loader2, TrendingUp } from "lucide-react";
 import { useHoldingStore } from "@/store/useHoldingStore";
 import { useAuthStore } from "@/store/useAuthStore";
 import Link from "next/link";
+import { useStockStore } from "@/store/useStockStore";
+import StockPrice from "./StockPrice";
 
-const StockDetail = ({ stock }) => {
+const StockDetail = ({ symbol }) => {
+  
   const [quantity, setQuantity] = useState(1);
   const {
     buyStock,
@@ -17,6 +20,10 @@ const StockDetail = ({ stock }) => {
     getHoldings,
     clearHoldings,
   } = useHoldingStore();
+  const { stocks, getStocks, refreshStocks } = useStockStore();
+  const liveStock =  stocks.find(
+    (s) => s.symbol === symbol
+  );
   const { authUser } = useAuthStore();
   useEffect(() => {
     if (authUser) {
@@ -25,6 +32,15 @@ const StockDetail = ({ stock }) => {
       clearHoldings();
     }
   }, [authUser, clearHoldings, getHoldings]);
+  useEffect(() => {
+    getStocks();
+
+    const interval = setInterval(() => {
+      refreshStocks();
+    }, 1000); // every 5 seconds
+
+    return () => clearInterval(interval);
+  }, [getStocks, refreshStocks]);
 
   const isHoldingThisStock = holdings.find(
     (h) => h.stockId._id.toString() === stock._id.toString()
@@ -36,7 +52,7 @@ const StockDetail = ({ stock }) => {
     : 0;
 
   const currentValue = isHoldingThisStock
-    ? isHoldingThisStock.quantity * stock.currentPrice
+    ? isHoldingThisStock.quantity * liveStock.currentPrice
     : 0;
 
   const pnl = currentValue - investedAmount;
@@ -68,7 +84,8 @@ const StockDetail = ({ stock }) => {
               <p className="text-base-content/60">Current Price</p>
 
               <h2 className="text-4xl font-bold">
-                ₹{stock.currentPrice.toLocaleString()}
+                <StockPrice price={liveStock.currentPrice} />
+                {/* {liveStock.currentPrice.toLocaleString()} */}
               </h2>
             </div>
           </div>
@@ -82,7 +99,7 @@ const StockDetail = ({ stock }) => {
             <IndianRupee size={30} />
             <h3 className="font-semibold">Current Price</h3>
             <p className="text-2xl font-bold">
-              ₹{stock.currentPrice.toLocaleString()}
+              ₹{liveStock.currentPrice.toLocaleString()}
             </p>
           </div>
         </div>
@@ -126,7 +143,7 @@ const StockDetail = ({ stock }) => {
               <div>
                 <p className="text-sm opacity-70">Current Price</p>
                 <p className="font-bold text-xl">
-                  ₹{stock.currentPrice.toFixed(2)}
+                  ₹{liveStock.currentPrice.toFixed(2)}
                 </p>
               </div>
 

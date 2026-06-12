@@ -1,4 +1,6 @@
 import Link from "next/link";
+import StockPrice from "./StockPrice";
+import React from "react";
 
 const StockCard = ({ stock }) => {
   return (
@@ -16,7 +18,10 @@ const StockCard = ({ stock }) => {
           </div>
 
           <div className="mt-4">
-            <p className="text-2xl font-bold">₹{stock.currentPrice}</p>
+            <p className="">
+              <StockPrice price={stock.currentPrice} />
+              {/* {stock.currentPrice} */}
+            </p>
           </div>
         </div>
       </div>

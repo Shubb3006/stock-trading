@@ -34,7 +34,7 @@ export default function Page() {
   }
   return (
     <div className="bg-base-200">
-      <StockDetail stock={selectedStock} />
+      <StockDetail symbol={symbol} />
     </div>
   );
 }

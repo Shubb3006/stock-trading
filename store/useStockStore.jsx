@@ -6,6 +6,7 @@ export const useStockStore = create((set) => ({
   stocks: [],
   selectedStock: null,
   fetchingStocks: false,
+  refreshingStocks: false,
   fetchingStockDetail: false,
   getStocks: async () => {
     try {
@@ -18,6 +19,23 @@ export const useStockStore = create((set) => ({
     } finally {
       set({ fetchingStocks: false });
     }
+  },
+  
+  refreshStocks: async () => {
+    const res = await axiosInstance.get("/stocks");
+
+    set((state) => ({
+      stocks: state.stocks.map((oldStock) => {
+        const updated = res.data.stocks.find((s) => s._id === oldStock._id);
+
+        return updated
+          ? {
+              ...oldStock,
+              currentPrice: updated.currentPrice,
+            }
+          : oldStock;
+      }),
+    }));
   },
 
   getStockDetail: async (symbol) => {
