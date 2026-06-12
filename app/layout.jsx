@@ -28,13 +28,15 @@ export default function RootLayout({ children }) {
       <body className="min-h-full flex flex-col">
         <AuthProvider>
           <Navbar />
-        {children}
+          {children}
 
-        <Toaster position="top-center"
-          toastOptions={{
-            duration: 2000,
-          }} />
-          </AuthProvider>
+          <Toaster
+            position="top-center"
+            toastOptions={{
+              duration: 2000,
+            }}
+          />
+        </AuthProvider>
       </body>
     </html>
   );

@@ -2,8 +2,11 @@ import axiosInstance from "@/lib/axios";
 import toast from "react-hot-toast";
 import { create } from "zustand";
 
+let intervalId;
+
 export const useStockStore = create((set) => ({
   stocks: [],
+  intervalId: null,
   selectedStock: null,
   fetchingStocks: false,
   refreshingStocks: false,
@@ -16,7 +19,7 @@ export const useStockStore = create((set) => ({
     try {
       set({
         fetchingHistory: true,
-      })
+      });
       const res = await axiosInstance.get(`/stocks/${symbol}/history`);
 
       set({
@@ -37,7 +40,7 @@ export const useStockStore = create((set) => ({
       });
     } catch (error) {
       console.log(error);
-    } 
+    }
   },
 
   getStocks: async () => {
@@ -53,11 +56,11 @@ export const useStockStore = create((set) => ({
     }
   },
 
-  clearPriceHistory:async()=>{
+  clearPriceHistory: async () => {
     set({
       priceHistory: [],
     }),
-    console.log("sd");
+      console.log("sd");
   },
 
   refreshStocks: async () => {

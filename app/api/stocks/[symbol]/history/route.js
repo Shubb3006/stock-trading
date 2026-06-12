@@ -27,12 +27,12 @@ export async function GET(req, { params }) {
       stockId: stock._id,
     });
 
-    if (count > 100) {
+    if (count > 10000) {
         const oldestRecords = await PriceHistory.find({
           stockId: stock._id,
         })
           .sort({ createdAt: 1 })
-          .limit(count - 100);
+          .limit(count - 10000);
       
         await PriceHistory.deleteMany({
           _id: { $in: oldestRecords.map((r) => r._id) },
