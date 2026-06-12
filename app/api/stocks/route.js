@@ -53,6 +53,7 @@ export async function GET(req) {
             status: "success",
             stocks,
         },{status:200})
+        
     } catch (error) {
         return NextResponse.json(
             {
