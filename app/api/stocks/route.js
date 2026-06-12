@@ -51,17 +51,17 @@ export async function GET(req) {
     try {
         await connectDB();
         const stocks=await Stock.find();
-        for(const stock of stocks){
-          stock.currentPrice = Number(
-            (stock.currentPrice + (Math.random() - 0.5) * 1).toFixed(2)
-          );
-          await stock.save();
+        // for(const stock of stocks){
+        //   stock.currentPrice = Number(
+        //     (stock.currentPrice + (Math.random() - 0.5) * 1).toFixed(2)
+        //   );
+        //   await stock.save();
 
-          await PriceHistory.create({
-            stockId:stock._id,
-            price:stock.currentPrice
-          })
-        }
+        //   await PriceHistory.create({
+        //     stockId:stock._id,
+        //     price:stock.currentPrice
+        //   })
+        // }
         return NextResponse.json({
             status: "success",
             stocks,

@@ -1,12 +1,12 @@
 import axiosInstance from "@/lib/axios";
+import { socket } from "@/lib/socket";
 import toast from "react-hot-toast";
 import { create } from "zustand";
-
-let intervalId;
 
 export const useStockStore = create((set) => ({
   stocks: [],
   intervalId: null,
+  livePrices:{},
   selectedStock: null,
   fetchingStocks: false,
   refreshingStocks: false,
@@ -64,7 +64,7 @@ export const useStockStore = create((set) => ({
   },
 
   refreshStocks: async () => {
-    const res = await axiosInstance.get("/stocks");
+    const res = await axiosInstance.post("/stocks/update-price");
 
     set((state) => ({
       stocks: state.stocks.map((oldStock) => {
@@ -92,5 +92,17 @@ export const useStockStore = create((set) => ({
     } finally {
       set({ fetchingStockDetail: false });
     }
+  },
+
+  connectSocket: () => {
+    socket.on("priceUpdate", (stocks) => {
+      const priceMap = {};
+  
+      stocks.forEach((s) => {
+        priceMap[s._id] = s.currentPrice;
+      });
+  
+      set({ livePrices: priceMap });
+    });
   },
 }));

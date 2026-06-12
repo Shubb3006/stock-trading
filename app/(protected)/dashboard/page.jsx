@@ -28,7 +28,6 @@ const page = () => {
 
     return () => clearInterval(interval);
   }, [getStocks, refreshStocks]);
-  console.log(holdings);
 
   const investedAmount = holdings.reduce(
     (acc, h) => acc + h.quantity * h.averageBuyPrice,
@@ -39,12 +38,9 @@ const page = () => {
     (acc, h) => acc + h.quantity * getLivePrice(h.stockId._id),
     0
   );
-  console.log(investedAmount);
-  console.log(currentValue);
 
   const pnl = currentValue - investedAmount;
   const percentage = investedAmount > 0 ? (pnl / investedAmount) * 100 : 0;
-  console.log(percentage.toFixed(2));
 
   if (isFetchingHoldings) {
     return <DashboardSkeleton />;
