@@ -24,7 +24,7 @@ const page = () => {
 
     const interval = setInterval(() => {
       refreshStocks();
-    }, 1000); // every 5 seconds
+    }, 5000); // every 5 seconds
 
     return () => clearInterval(interval);
   }, [getStocks, refreshStocks]);
