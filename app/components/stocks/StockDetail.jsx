@@ -8,8 +8,7 @@ import Link from "next/link";
 import { useStockStore } from "@/store/useStockStore";
 import StockPrice from "./StockPrice";
 
-const StockDetail = ({ symbol }) => {
-  
+const StockDetail = ({ stock }) => {
   const [quantity, setQuantity] = useState(1);
   const {
     buyStock,
@@ -21,9 +20,12 @@ const StockDetail = ({ symbol }) => {
     clearHoldings,
   } = useHoldingStore();
   const { stocks, getStocks, refreshStocks } = useStockStore();
-  const liveStock =  stocks.find(
-    (s) => s.symbol === symbol
-  );
+
+  const getLivePrice = (stockId) => {
+    const liveStock = stocks.find((s) => s._id === stockId);
+    return liveStock?.currentPrice || 0;
+  };
+
   const { authUser } = useAuthStore();
   useEffect(() => {
     if (authUser) {
@@ -34,13 +36,15 @@ const StockDetail = ({ symbol }) => {
   }, [authUser, clearHoldings, getHoldings]);
   useEffect(() => {
     getStocks();
-
     const interval = setInterval(() => {
       refreshStocks();
     }, 1000); // every 5 seconds
 
     return () => clearInterval(interval);
   }, [getStocks, refreshStocks]);
+
+  const liveStock = stocks.find((s) => s._id === stock._id) || stock;
+  console.log(stock);
 
   const isHoldingThisStock = holdings.find(
     (h) => h.stockId._id.toString() === stock._id.toString()
@@ -57,7 +61,7 @@ const StockDetail = ({ symbol }) => {
 
   const pnl = currentValue - investedAmount;
 
-  const totalCost = quantity * stock.currentPrice;
+  const totalCost = quantity * liveStock?.currentPrice;
 
   async function handleBuy() {
     await buyStock({ quantity, stockId: stock._id });
@@ -73,19 +77,22 @@ const StockDetail = ({ symbol }) => {
         <div className="card-body">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-              <h1 className="text-5xl font-bold">{stock.symbol}</h1>
+              <h1 className="text-5xl font-bold">{liveStock?.symbol}</h1>
 
-              <p className="text-xl text-base-content/70 mt-2">{stock.name}</p>
+              <p className="text-xl text-base-content/70 mt-2">
+                {liveStock?.name}
+              </p>
 
-              <div className="badge badge-primary mt-4">{stock.sector}</div>
+              <div className="badge badge-primary mt-4">
+                {liveStock?.sector}
+              </div>
             </div>
 
             <div className="text-left md:text-right">
               <p className="text-base-content/60">Current Price</p>
 
               <h2 className="text-4xl font-bold">
-                <StockPrice price={liveStock.currentPrice} />
-                {/* {liveStock.currentPrice.toLocaleString()} */}
+                <StockPrice price={liveStock?.currentPrice} />
               </h2>
             </div>
           </div>
@@ -99,7 +106,7 @@ const StockDetail = ({ symbol }) => {
             <IndianRupee size={30} />
             <h3 className="font-semibold">Current Price</h3>
             <p className="text-2xl font-bold">
-              ₹{liveStock.currentPrice.toLocaleString()}
+              ₹{liveStock?.currentPrice.toLocaleString()}
             </p>
           </div>
         </div>
@@ -108,7 +115,7 @@ const StockDetail = ({ symbol }) => {
           <div className="card-body items-center text-center">
             <Building2 size={30} />
             <h3 className="font-semibold">Company</h3>
-            <p>{stock.name}</p>
+            <p>{stock?.name}</p>
           </div>
         </div>
 
@@ -116,7 +123,7 @@ const StockDetail = ({ symbol }) => {
           <div className="card-body items-center text-center">
             <TrendingUp size={30} />
             <h3 className="font-semibold">Sector</h3>
-            <p>{stock.sector}</p>
+            <p>{liveStock?.sector}</p>
           </div>
         </div>
       </div>
@@ -143,7 +150,7 @@ const StockDetail = ({ symbol }) => {
               <div>
                 <p className="text-sm opacity-70">Current Price</p>
                 <p className="font-bold text-xl">
-                  ₹{liveStock.currentPrice.toFixed(2)}
+                  ₹{liveStock?.currentPrice.toFixed(2)}
                 </p>
               </div>
 
@@ -180,9 +187,9 @@ const StockDetail = ({ symbol }) => {
             <h2 className="card-title text-2xl">About</h2>
 
             <p className="text-base-content/70 leading-relaxed">
-              {stock.name} operates in the {stock.sector} sector. This stock is
-              available for paper trading within the platform. You can purchase
-              shares and track your holdings through your portfolio.
+              {stock?.name} operates in the {stock?.sector} sector. This stock
+              is available for paper trading within the platform. You can
+              purchase shares and track your holdings through your portfolio.
             </p>
           </div>
         </div>
@@ -224,7 +231,7 @@ const StockDetail = ({ symbol }) => {
               <div className="bg-base-200 rounded-lg p-4 mt-4">
                 <div className="flex justify-between">
                   <span>Price per Share</span>
-                  <span>₹{stock.currentPrice.toLocaleString()}</span>
+                  <span>₹{stock?.currentPrice.toLocaleString()}</span>
                 </div>
 
                 <div className="flex justify-between mt-2">
