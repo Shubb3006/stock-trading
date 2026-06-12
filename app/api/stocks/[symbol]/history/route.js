@@ -21,8 +21,23 @@ export async function GET(req, { params }) {
 
     const history = await PriceHistory.find({
       stockId: stock._id,
-    })
-      .sort({ createdAt: 1 })
+    }).sort({ createdAt: 1 })
+
+    const count = await PriceHistory.countDocuments({
+      stockId: stock._id,
+    });
+
+    if (count > 100) {
+        const oldestRecords = await PriceHistory.find({
+          stockId: stock._id,
+        })
+          .sort({ createdAt: 1 })
+          .limit(count - 100);
+      
+        await PriceHistory.deleteMany({
+          _id: { $in: oldestRecords.map((r) => r._id) },
+        });
+      }
 
     return NextResponse.json({count:history.length, history});
   } catch (error) {
