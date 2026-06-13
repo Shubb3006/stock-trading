@@ -6,7 +6,7 @@ import { create } from "zustand";
 export const useStockStore = create((set) => ({
   stocks: [],
   intervalId: null,
-  livePrices:{},
+  livePrices: {},
   selectedStock: null,
   fetchingStocks: false,
   refreshingStocks: false,
@@ -78,6 +78,7 @@ export const useStockStore = create((set) => ({
           : oldStock;
       }),
     }));
+    // set({ stocks: res.data.stocks });
   },
 
   getStockDetail: async (symbol) => {
@@ -97,11 +98,11 @@ export const useStockStore = create((set) => ({
   connectSocket: () => {
     socket.on("priceUpdate", (stocks) => {
       const priceMap = {};
-  
+
       stocks.forEach((s) => {
         priceMap[s._id] = s.currentPrice;
       });
-  
+
       set({ livePrices: priceMap });
     });
   },

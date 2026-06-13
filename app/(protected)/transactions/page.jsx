@@ -1,15 +1,13 @@
 "use client";
 import DashboardSkeleton from "@/app/components/skeletons/DashboardSkeleton";
 import { useTransactionsStore } from "@/store/useTransactionsStore";
-import { Loader2 } from "lucide-react";
 import React, { useEffect } from "react";
 
 const page = () => {
   const { getAllTransactions, transactions, isFetchingTransactions } =
     useTransactionsStore();
-    useEffect(() => {
-      if(transactions.length===0)
-    getAllTransactions();
+  useEffect(() => {
+    if (transactions.length === 0) getAllTransactions();
   }, []);
 
   if (isFetchingTransactions) return <DashboardSkeleton />;
@@ -17,7 +15,6 @@ const page = () => {
   const totalRealizedPL = transactions
     .filter((t) => t.type === "SELL")
     .reduce((acc, t) => acc + (t.realizedPnl || 0), 0);
-  console.log(totalRealizedPL);
   return (
     <div className="min-h-[calc(100vh-64px)] bg-base-200">
       <div className="max-w-6xl mx-auto p-6">
@@ -75,7 +72,7 @@ const page = () => {
 
                         <td>
                           <div>
-                            <p className="font-bold">{t.stockId.symbol}</p>
+                            <p className="font-bold">{t.stockId?.symbol}</p>
                             <p className="text-xs opacity-70">
                               {t.stockId.name}
                             </p>

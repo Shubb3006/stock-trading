@@ -26,7 +26,7 @@ export default function StockChart({ data, range }) {
           <IndianRupee size={16} />
           <span>
             {isPositive ? "+" : ""}
-            {totalChange.toFixed(2)} ({isPositive ? "+" : ""}
+            {totalChange.toFixed(2)}({isPositive ? "+" : ""}
             {percentage.toFixed(2)}%)
           </span>
         </div>

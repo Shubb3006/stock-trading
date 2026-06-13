@@ -11,6 +11,7 @@ export default function Home() {
   const { getStocks, stocks,fetchingStocks,refreshStocks } = useStockStore();
   const {authUser}=useAuthStore();
  useEffect(() => {
+  if(stocks.length===0)
     getStocks();
 
     const interval = setInterval(() => {
@@ -76,7 +77,7 @@ export default function Home() {
         </div>
       ) : (
         <div className="max-w-7xl mx-auto  grid justify-center md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {stocks.map((stock) => (
+          {stocks.slice(0,8).map((stock) => (
             <StockCard key={stock._id} stock={stock} />
           ))}
         </div>
