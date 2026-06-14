@@ -1,15 +1,17 @@
 "use client";
-import PortfolioChart from "@/app/components/Portfolio";
 import DashboardSkeleton from "@/app/components/skeletons/DashboardSkeleton";
 import { useHoldingStore } from "@/store/useHoldingStore";
 import { useStockStore } from "@/store/useStockStore";
-import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import React, { useEffect } from "react";
+import { usePortfolioStore } from "@/store/useProtfolioStore";
+import PortfolioChart from "@/app/components/portfolio/PortfolioChart";
 
 const page = () => {
   const { holdings, getHoldings, isFetchingHoldings } = useHoldingStore();
   const { getStocks, refreshStocks, stocks } = useStockStore();
+  const { portfolioHistory, getPortfolioHistory, createPortfolioSnapshot } =
+    usePortfolioStore();
 
   const getLivePrice = (stockId) => {
     const liveStock = stocks.find((s) => s._id === stockId);
@@ -18,6 +20,15 @@ const page = () => {
   useEffect(() => {
     if (holdings.length === 0) getHoldings();
   }, [getHoldings]);
+
+  useEffect(() => {
+    async function loadData() {
+      await createPortfolioSnapshot();
+      await getPortfolioHistory();
+    }
+
+    loadData();
+  }, []);
 
   useEffect(() => {
     getStocks();
@@ -42,13 +53,40 @@ const page = () => {
   const pnl = currentValue - investedAmount;
   const percentage = investedAmount > 0 ? (pnl / investedAmount) * 100 : 0;
 
+  const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
+
+  const history24h = portfolioHistory.reduce((closest, current) => {
+    const currentDiff = Math.abs(
+      new Date(current.createdAt).getTime() - oneDayAgo
+    );
+
+    const closestDiff = closest
+      ? Math.abs(new Date(closest.createdAt).getTime() - oneDayAgo)
+      : Infinity;
+
+    return currentDiff < closestDiff ? current : closest;
+  }, null);
+
+  const oldValue = history24h?.totalValue || currentValue;
+
+  const dayPnl = currentValue - oldValue;
+
+  const dayPnlPercent = oldValue > 0 ? (dayPnl / oldValue) * 100 : 0;
+
   if (isFetchingHoldings) {
     return <DashboardSkeleton />;
   }
 
+  const chartData = portfolioHistory.map((item) => ({
+    time: item.createdAt,
+    invested: item.totalInvested,
+    value: item.totalValue,
+  }));
+
   return (
     <div className="min-h-[calc(100vh-64px)] bg-base-200">
       <div className="max-w-6xl mx-auto p-6">
+        <PortfolioChart data={chartData} />
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold">My Portfolio</h1>
@@ -58,7 +96,7 @@ const page = () => {
         </div>
 
         {/* Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
           <div className="card bg-base-100 shadow-lg">
             <div className="card-body">
               <p className="text-base-content/60">Invested Amount</p>
@@ -88,6 +126,20 @@ const page = () => {
               >
                 {pnl >= 0 ? "+" : ""}₹{pnl.toLocaleString()} (
                 {percentage.toFixed(2)}%)
+              </h2>
+            </div>
+          </div>
+          <div className="card bg-base-100 shadow-lg">
+            <div className="card-body">
+              <p className="text-base-content/60">1 Day Returns</p>
+
+              <h2
+                className={`text-3xl font-bold ${
+                  dayPnl >= 0 ? "text-success" : "text-error"
+                }`}
+              >
+                {dayPnl >= 0 ? "+" : ""}₹{dayPnl.toLocaleString()} (
+                {dayPnlPercent.toFixed(2)}%)
               </h2>
             </div>
           </div>

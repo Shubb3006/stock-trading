@@ -2,6 +2,7 @@ import { getUserFromCookie } from "@/lib/auth";
 import { connectDB } from "@/lib/db";
 import Holding from "@/models/holding.model";
 import { NextResponse } from "next/server";
+import "@/models/stock.model"
 
 export async function GET(req){
     try {
@@ -22,7 +23,7 @@ export async function GET(req){
         );
     } catch (error) {
         return NextResponse.json(
-            {status:"error",message:"Internal Server Error"},
+            {status:"error",message:error.message},
             {status:500}
         )
     }
