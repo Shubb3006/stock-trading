@@ -10,13 +10,14 @@ import { AnimatePresence, motion } from "framer-motion";
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+  console.log(pathname);
   const router = useRouter();
 
   const { authUser, logout } = useAuthStore();
 
   async function handleLogout() {
     const success = await logout();
-    if (success) router.push("/");
+    if (success) router.replace(`/login?redirect=${pathname}`);
   }
   const linkClass = (path) =>
     `transition-colors px-3 py-2 rounded-full duration-300 ${
@@ -84,13 +85,27 @@ const Navbar = () => {
             ) : (
               <>
                 <li>
-                  <Link href="/login" className="btn btn-sm btn-ghost">
+                  <Link
+                    disabled={
+                      pathname.startsWith("/login") ||
+                      pathname.startsWith("/signup")
+                    }
+                    href="/login"
+                    className="btn btn-sm btn-ghost"
+                  >
                     Login
                   </Link>
                 </li>
 
                 <li>
-                  <Link href="/signup" className="btn btn-sm btn-primary">
+                  <Link
+                    disabled={
+                      pathname.startsWith("/login") ||
+                      pathname.startsWith("/signup")
+                    }
+                    href="/signup"
+                    className="btn btn-sm btn-primary"
+                  >
                     Sign Up
                   </Link>
                 </li>
@@ -167,13 +182,27 @@ const Navbar = () => {
               ) : (
                 <>
                   <li>
-                    <Link href="/login" className="btn btn-sm btn-ghost">
+                    <Link
+                      disabled={
+                        pathname.startsWith("/login") ||
+                        pathname.startsWith("/signup")
+                      }
+                      href="/login"
+                      className="btn btn-sm btn-ghost"
+                    >
                       Login
                     </Link>
                   </li>
 
                   <li>
-                    <Link href="/signup" className="btn btn-sm btn-primary">
+                    <Link
+                      disabled={
+                        pathname.startsWith("/login") ||
+                        pathname.startsWith("/signup")
+                      }
+                      href="/signup"
+                      className="btn btn-sm btn-primary"
+                    >
                       Sign Up
                     </Link>
                   </li>

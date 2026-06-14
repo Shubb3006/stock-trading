@@ -1,12 +1,7 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
-import {
-  Building2,
-  IndianRupee,
-  Loader2,
-  TrendingUp,
-} from "lucide-react";
+import { Building2, IndianRupee, Loader2, TrendingUp } from "lucide-react";
 import { useHoldingStore } from "@/store/useHoldingStore";
 import { useAuthStore } from "@/store/useAuthStore";
 import Link from "next/link";
@@ -15,9 +10,12 @@ import StockPrice from "./StockPrice";
 import StockChart from "./StockChart";
 import StockChartSkeleton from "../skeletons/StockChartSkeleton";
 import { useWatchListStore } from "@/store/useWatchListStore";
+import { usePathname } from "next/navigation";
 
 const StockDetail = ({ stock }) => {
   const [range, setRange] = useState("1D");
+  const pathname = usePathname();
+  console.log(pathname)
 
   const [quantity, setQuantity] = useState(1);
   const {
@@ -328,7 +326,10 @@ const StockDetail = ({ stock }) => {
                 Sign in to buy shares, track your portfolio and monitor profits.
               </p>
 
-              <Link href="/login" className="btn btn-primary mt-4">
+              <Link
+                href={`/login?redirect=${pathname}`}
+                className="btn btn-primary mt-4"
+              >
                 Login to Trade
               </Link>
             </div>

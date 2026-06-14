@@ -9,11 +9,13 @@ import {
   PanelsTopLeft,
 } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, { useState } from "react";
 
 const page = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirect") || "/";
   const [showPassword, setShowPassword] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -27,7 +29,9 @@ const page = () => {
   async function handleSubmit(e) {
     e.preventDefault();
     const success = await signup(formData);
-    if (success) router.push("/dashboard");
+    if (success) {
+      router.replace(redirectTo);
+    }
   }
 
   return (
@@ -126,7 +130,10 @@ const page = () => {
           {/* Signup Link */}
           <p className="text-center text-sm">
             Already Have a Account?
-            <Link href="/login" className="link link-primary ml-1">
+            <Link
+              href={`/login?redirect=${redirectTo}`}
+              className="link link-primary ml-1"
+            >
               Login
             </Link>
           </p>

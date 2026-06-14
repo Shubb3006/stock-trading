@@ -3,11 +3,13 @@
 import { useAuthStore } from "@/store/useAuthStore";
 import { Eye, EyeClosed, Mail, Lock, Loader2 } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, { useState } from "react";
 
 const LoginPage = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirect") || "/";
   const [showPassword, setShowPassword] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -21,7 +23,7 @@ const LoginPage = () => {
     e.preventDefault();
     const success = await login(formData);
     if (success) {
-      router.push("/dashboard");
+      router.replace(redirectTo);
     }
   }
 
@@ -103,7 +105,10 @@ const LoginPage = () => {
           {/* Signup Link */}
           <p className="text-center text-sm">
             Don't have an account?
-            <Link href="/signup" className="link link-primary ml-1">
+            <Link
+              href={`/signup?redirect=${redirectTo}`}
+              className="link link-primary ml-1"
+            >
               Sign Up
             </Link>
           </p>
