@@ -1,7 +1,14 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
-import { Building2, IndianRupee, Loader2, TrendingUp } from "lucide-react";
+import {
+  Building2,
+  IndianRupee,
+  Loader,
+  Loader2,
+  Star,
+  TrendingUp,
+} from "lucide-react";
 import { useHoldingStore } from "@/store/useHoldingStore";
 import { useAuthStore } from "@/store/useAuthStore";
 import Link from "next/link";
@@ -49,8 +56,10 @@ const StockDetail = ({ stock }) => {
   const { authUser } = useAuthStore();
 
   useEffect(() => {
-    if (watchList.length === 0) getWatchList();
-  }, [getWatchList]);
+    if (authUser && watchList.length === 0) {
+      getWatchList();
+    }
+  }, [authUser]);
 
   useEffect(() => {
     if (authUser) {
@@ -143,30 +152,72 @@ const StockDetail = ({ stock }) => {
     });
   }, [chartData, range]);
 
+  async function toggleWishlist(stockId) {
+    if (isInWatchList) {
+      await deleteFromWatchList(stockId);
+    } else {
+      await addToWatchList({ stockId });
+    }
+  }
+
   return (
     <div className="min-h-[calc(100vh-64px)] max-w-6xl mx-auto px-4 py-10">
       {/* Header */}
       <div className="card bg-base-100 shadow-xl mb-8">
         <div className="card-body">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div>
-              <h1 className="text-5xl font-bold">{liveStock?.symbol}</h1>
+            <div className="flex items-center">
+              <div>
+                <h1 className="text-5xl font-bold">{liveStock?.symbol}</h1>
 
-              <p className="text-xl text-base-content/70 mt-2">
-                {liveStock?.name}
-              </p>
+                <p className="text-xl text-base-content/70 mt-2">
+                  {liveStock?.name}
+                </p>
 
-              <div className="badge badge-primary mt-4">
-                {liveStock?.sector}
+                <div className="badge badge-primary mt-4">
+                  {liveStock?.sector}
+                </div>
               </div>
             </div>
 
             <div className="text-left md:text-right">
-              <p className="text-base-content/60">Current Price</p>
+              <div className="flex items-center gap-2 justify-end">
+                <h2 className="text-4xl font-bold">
+                  <StockPrice price={liveStock?.currentPrice} />
+                </h2>
+                {authUser && !isFetchingWatchList && (
+                  <div
+                    className="tooltip"
+                    data-tip={
+                      isInWatchList
+                        ? "Remove from Watchlist"
+                        : "Add to Watchlist"
+                    }
+                  >
+                    <button
+                      className="btn btn-circle btn-sm cursor-pointer transition-transform duration-300 hover:scale-110"
+                      disabled={isAddingToWatchList || isDeletingFromWatchList}
+                      onClick={() => toggleWishlist(stock._id)}
+                    >
+                      {isAddingToWatchList || isDeletingFromWatchList ? (
+                        <Loader2 className="animate-spin" />
+                      ) : (
+                        <Star
+                          size={22}
+                          className={
+                            isInWatchList
+                              ? "text-yellow-400"
+                              : "text-base-content/40"
+                          }
+                          fill={`${isInWatchList ? "currentColor" : "none"}`}
+                        />
+                      )}
+                    </button>
+                  </div>
+                )}
+              </div>
 
-              <h2 className="text-4xl font-bold">
-                <StockPrice price={liveStock?.currentPrice} />
-              </h2>
+              <p className="text-base-content/60">Current Price</p>
             </div>
           </div>
         </div>
@@ -286,33 +337,6 @@ const StockDetail = ({ stock }) => {
               purchase shares and track your holdings through your portfolio.
             </p>
           </div>
-          {!authUser ? (
-            " "
-          ) : isInWatchList ? (
-            <button
-              disabled={isDeletingFromWatchList}
-              onClick={() => deleteFromWatchList(stock._id)}
-              className="btn btn-error"
-            >
-              {isDeletingFromWatchList ? (
-                <Loader2 className="animate-spin" />
-              ) : (
-                "Remove from Watchlist"
-              )}
-            </button>
-          ) : (
-            <button
-              disabled={isAddingToWatchList}
-              onClick={() => addToWatchList({ stockId: stock._id })}
-              className="btn btn-primary"
-            >
-              {isAddingToWatchList ? (
-                <Loader2 className="animate-spin" />
-              ) : (
-                "Add to Watchlist"
-              )}
-            </button>
-          )}
         </div>
 
         {/* Buy Section */}

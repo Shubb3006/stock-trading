@@ -5,7 +5,7 @@ import React from "react";
 const StockCard = ({ stock }) => {
   return (
     <Link href={`/stocks/${stock.symbol}`}>
-      <div className="h-full card bg-base-100 shadow-md border hover:shadow-xl transition-all duration-300 cursor-pointer">
+      <div className="h-full card bg-base-100 shadow-md border hover:shadow-2xl transition-all duration-300 cursor-pointer hover:-translate-y-2 z-50">
         <div className="card-body">
           <div className="flex justify-between items-start">
             <div>
