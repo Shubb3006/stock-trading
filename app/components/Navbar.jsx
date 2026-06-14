@@ -37,7 +37,7 @@ const Navbar = () => {
 
         {/* Navigation */}
         <nav className="hidden md:flex">
-          <ul className="flex items-center gap-6">
+          <ul className="flex items-center lg:gap-6 md:gap-2">
             <li>
               <Link href="/stocks" className={linkClass("/stocks")}>
                 Stocks
@@ -61,11 +61,11 @@ const Navbar = () => {
                     href="/transactions"
                     className={linkClass("/transactions")}
                   >
-                    My Transactions
+                    Transactions
                   </Link>
                 </li>
 
-                <li className="hidden md:block bg-primary px-2 py-1">
+                <li className="bg-primary px-2 py-1">
                   <span className="font-medium">
                     Hi,{" "}
                     {authUser.name.charAt(0).toUpperCase() +
@@ -158,11 +158,11 @@ const Navbar = () => {
                       href="/transactions"
                       className={linkClass("/transactions")}
                     >
-                      My Transactions
+                      Transactions
                     </Link>
                   </li>
 
-                  <li>
+                  <li className="bg-primary px-2 py-1">
                     <span className="font-medium">
                       Hi,{" "}
                       {authUser.name.charAt(0).toUpperCase() +
