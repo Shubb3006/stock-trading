@@ -59,8 +59,7 @@ export const useStockStore = create((set) => ({
   clearPriceHistory: async () => {
     set({
       priceHistory: [],
-    }),
-      console.log("sd");
+    })
   },
 
   refreshStocks: async () => {

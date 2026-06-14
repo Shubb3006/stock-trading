@@ -15,7 +15,6 @@ import { usePathname } from "next/navigation";
 const StockDetail = ({ stock }) => {
   const [range, setRange] = useState("1D");
   const pathname = usePathname();
-  console.log(pathname)
 
   const [quantity, setQuantity] = useState(1);
   const {

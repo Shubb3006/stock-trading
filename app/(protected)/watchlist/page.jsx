@@ -14,7 +14,6 @@ const Page = () => {
     if (watchList.length === 0) getWatchList();
   }, [getWatchList]);
 
-  console.log(watchList);
   const filteredStocks = watchList.filter(
     (stock) =>
       stock.stockId.symbol.toLowerCase().includes(search.toLowerCase()) ||

@@ -37,7 +37,6 @@ export default function Page() {
       </div>
     );
   }
-  console.log(selectedStock);
   return (
     <div className="bg-base-200">
       <StockDetail stock={selectedStock} />

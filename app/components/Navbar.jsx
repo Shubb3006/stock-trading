@@ -10,7 +10,6 @@ import { AnimatePresence, motion } from "framer-motion";
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
-  console.log(pathname);
   const router = useRouter();
 
   const { authUser, logout } = useAuthStore();

@@ -11,7 +11,6 @@ const page = () => {
   }, []);
 
   if (isFetchingTransactions) return <DashboardSkeleton />;
-  console.log(transactions);
   const totalRealizedPL = transactions
     .filter((t) => t.type === "SELL")
     .reduce((acc, t) => acc + (t.realizedPnl || 0), 0);

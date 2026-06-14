@@ -2,6 +2,7 @@ import { getUserFromCookie } from "@/lib/auth";
 import { connectDB } from "@/lib/db";
 import  Transaction  from '@/models/transaction.model';
 import { NextResponse } from "next/server";
+import "@/models/stock.model"
 
 export async function GET(req){
     try {
@@ -16,8 +17,8 @@ export async function GET(req){
           );
         }
 
-        const transactions=await Transaction.find({userId:user._id}).populate("stockId","symbol name currentPrice sector")
-        
+        const transactions=await Transaction.find({userId:user._id}).populate("stockId","symbol name  sector").sort({createdAt:-1})
+
         return NextResponse.json(
             {status:"success" ,transactions},
             {status:200}

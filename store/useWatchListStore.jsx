@@ -12,7 +12,6 @@ export const useWatchListStore = create((set) => ({
     try {
       set({ isFetchingWatchList: true });
       const res = await axiosInstance.get("/watchlist");
-      console.log(res.data.watchlist);
       set({ watchList: res.data.watchlist });
     } catch (error) {
       console.log(error.message);

@@ -15,7 +15,6 @@ export default function Home() {
   const {authUser}=useAuthStore();
 
   useEffect(()=>{getWatchList()},[]);
-  console.log(watchList)
  useEffect(() => {
   if(stocks.length===0)
     getStocks();
