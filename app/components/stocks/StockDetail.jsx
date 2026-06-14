@@ -1,7 +1,13 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
-import { Building2, IndianRupee, Loader2, TrendingUp } from "lucide-react";
+import {
+  Building2,
+  IndianRupee,
+  Loader,
+  Loader2,
+  TrendingUp,
+} from "lucide-react";
 import { useHoldingStore } from "@/store/useHoldingStore";
 import { useAuthStore } from "@/store/useAuthStore";
 import Link from "next/link";
@@ -9,6 +15,7 @@ import { useStockStore } from "@/store/useStockStore";
 import StockPrice from "./StockPrice";
 import StockChart from "./StockChart";
 import StockChartSkeleton from "../skeletons/StockChartSkeleton";
+import { useWatchListStore } from "@/store/useWatchListStore";
 
 const StockDetail = ({ stock }) => {
   const [range, setRange] = useState("1D");
@@ -33,8 +40,21 @@ const StockDetail = ({ stock }) => {
     refreshPriceHistory,
     clearPriceHistory,
   } = useStockStore();
+  const {
+    getWatchList,
+    watchList,
+    addToWatchList,
+    deleteFromWatchList,
+    isFetchingWatchList,
+    isAddingToWatchList,
+    isDeletingFromWatchList,
+  } = useWatchListStore();
 
   const { authUser } = useAuthStore();
+
+  useEffect(() => {
+    getWatchList();
+  }, []);
 
   useEffect(() => {
     if (authUser) {
@@ -44,10 +64,6 @@ const StockDetail = ({ stock }) => {
     }
   }, [authUser, clearHoldings, getHoldings]);
 
-  // useEffect(() => {
-  //   clearPriceHistory();
-  //   getPriceHistory(stock.symbol);
-  // }, [stock.symbol]);
   useEffect(() => {
     clearPriceHistory();
 
@@ -55,12 +71,17 @@ const StockDetail = ({ stock }) => {
     getPriceHistory(stock.symbol);
 
     const interval = setInterval(() => {
-        refreshStocks();
+      refreshStocks();
       refreshPriceHistory(stock.symbol);
     }, 5000);
 
     return () => clearInterval(interval);
   }, [stock.symbol]);
+
+  const isInWatchList = watchList.some((w) => {
+    const id = w.stockId?._id || w.stockId;
+    return id === stock._id;
+  });
 
   const liveStock = stocks.find((s) => s._id === stock._id) || stock;
 
@@ -269,6 +290,33 @@ const StockDetail = ({ stock }) => {
               purchase shares and track your holdings through your portfolio.
             </p>
           </div>
+          {!authUser ? (
+            " "
+          ) : isInWatchList ? (
+            <button
+              disabled={isDeletingFromWatchList}
+              onClick={() => deleteFromWatchList(stock._id)}
+              className="btn btn-error"
+            >
+              {isDeletingFromWatchList ? (
+                <Loader2 className="animate-spin" />
+              ) : (
+                "Remove from Watchlist"
+              )}
+            </button>
+          ) : (
+            <button
+              disabled={isAddingToWatchList}
+              onClick={() => addToWatchList({ stockId: stock._id })}
+              className="btn btn-primary"
+            >
+              {isAddingToWatchList ? (
+                <Loader2 className="animate-spin" />
+              ) : (
+                "Add to Watchlist"
+              )}
+            </button>
+          )}
         </div>
 
         {/* Buy Section */}

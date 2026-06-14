@@ -26,7 +26,7 @@ export const useStockStore = create((set) => ({
         priceHistory: res.data.history,
       });
     } catch (error) {
-      console.log(error);
+      console.log(error.message);
     } finally {
       set({ fetchingHistory: false });
     }

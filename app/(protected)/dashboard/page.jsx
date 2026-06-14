@@ -79,7 +79,7 @@ const page = () => {
 
           <div className="card bg-base-100 shadow-lg">
             <div className="card-body">
-              <p className="text-base-content/60">Profit / Loss</p>
+              <p className="text-base-content/60">Total Returns</p>
 
               <h2
                 className={`text-3xl font-bold ${

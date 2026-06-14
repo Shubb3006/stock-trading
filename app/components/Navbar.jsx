@@ -50,7 +50,11 @@ const Navbar = () => {
                     Dashboard
                   </Link>
                 </li>
-
+                <li>
+                  <Link href="/watchlist" className={linkClass("/watchlist")}>
+                    Watchlist
+                  </Link>
+                </li>
                 <li>
                   <Link
                     href="/transactions"
@@ -126,6 +130,11 @@ const Navbar = () => {
                   <li>
                     <Link href="/dashboard" className={linkClass("/dashboard")}>
                       Dashboard
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/watchlist" className={linkClass("/watchlist")}>
+                      Watchlist
                     </Link>
                   </li>
 
