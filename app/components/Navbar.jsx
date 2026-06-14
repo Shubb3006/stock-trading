@@ -6,6 +6,7 @@ import { Menu, TrendingUp, X } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import ThemeToggle from "./ThemeToggler";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -26,7 +27,7 @@ const Navbar = () => {
     }`;
 
   return (
-    <header className="sticky top-0 z-50 bg-base-100/80 backdrop-blur-md">
+    <header className="sticky top-0 z-100 bg-base-100/80 backdrop-blur-md">
       <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 text-xl font-bold">
@@ -64,7 +65,7 @@ const Navbar = () => {
                   </Link>
                 </li>
 
-                <li className="hidden md:block">
+                <li className="hidden md:block bg-primary px-2 py-1">
                   <span className="font-medium">
                     Hi,{" "}
                     {authUser.name.charAt(0).toUpperCase() +

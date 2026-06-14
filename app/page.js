@@ -6,15 +6,12 @@ import { useEffect } from "react";
 import StockCard from "./components/stocks/StockCard";
 import { Loader2 } from "lucide-react";
 import { useAuthStore } from "@/store/useAuthStore";
-import { useWatchListStore } from "@/store/useWatchListStore";
 
 export default function Home() {
   const { getStocks, stocks,fetchingStocks,refreshStocks } = useStockStore();
-  const {watchList,getWatchList}=useWatchListStore();
 
   const {authUser}=useAuthStore();
 
-  useEffect(()=>{getWatchList()},[]);
  useEffect(() => {
   if(stocks.length===0)
     getStocks();

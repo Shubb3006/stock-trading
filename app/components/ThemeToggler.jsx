@@ -25,7 +25,9 @@ const ThemeToggle = () => {
         type="checkbox"
         className="toggle toggle-sm"
         checked={theme === "dark"}
-        onChange={() => setTheme(theme === "light" ? "dark" : "light")}
+        onChange={() =>
+          setTheme(theme === "light" ? "dark" : "light")
+        }
       />
 
       <Moon size={18} />

@@ -4,7 +4,6 @@ import React, { useEffect, useMemo, useState } from "react";
 import {
   Building2,
   IndianRupee,
-  Loader,
   Loader2,
   Star,
   TrendingUp,
@@ -362,9 +361,9 @@ const StockDetail = ({ stock }) => {
             <div className="card-body">
               <h2 className="card-title text-2xl">Buy Shares</h2>
 
-              <div className="form-control">
+              <div className="form-control flex gap-2">
                 <label className="label">
-                  <span className="label-text">Quantity</span>
+                  <span className="label-text">Quantity : </span>
                 </label>
 
                 <input
