@@ -1,4 +1,5 @@
 import axiosInstance from "@/lib/axios";
+import toast from "react-hot-toast";
 import { create } from "zustand";
 
 export const useWatchListStore = create((set) => ({
@@ -27,7 +28,7 @@ export const useWatchListStore = create((set) => ({
       set((state) => ({
         watchList: [...state.watchList, res.data.watchlist],
       }));
-      console.log(watchList);
+      toast.success("Added to your watchlist");
     } catch (error) {
     } finally {
       set({ isAddingToWatchList: false });
@@ -42,6 +43,7 @@ export const useWatchListStore = create((set) => ({
           (item) => item.stockId._id !== stockId
         ),
       }));
+      toast.success("Removed from your watchlist");
     } catch (error) {
       console.log(error.message);
     } finally {
