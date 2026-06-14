@@ -1,16 +1,17 @@
 "use client";
 
+import StocksPageSkeleton from "@/app/components/skeletons/StockPageSkeleton";
 import StockCard from "@/app/components/stocks/StockCard";
 import StockSearch from "@/app/components/stocks/StockSearch";
 import { useWatchListStore } from "@/store/useWatchListStore";
 import React, { useEffect, useState } from "react";
 
 const Page = () => {
-  const { watchList, getWatchList } = useWatchListStore();
+  const { watchList, getWatchList, isFetchingWatchList } = useWatchListStore();
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    getWatchList();
+    if (watchList.length === 0) getWatchList();
   }, [getWatchList]);
 
   console.log(watchList);
@@ -20,10 +21,12 @@ const Page = () => {
       stock.stockId.name.toLowerCase().includes(search.toLowerCase())
   );
 
+  if (isFetchingWatchList) return <StocksPageSkeleton />;
+
   return (
     <div className="min-h-[calc(100vh-64px)] bg-base-200">
       <div className="mt-4 text-center mb-8">
-        <h1 className="text-4xl font-bold">Explore Stocks</h1>
+        <h1 className="text-4xl font-bold">My Watchlist</h1>
 
         <p className="text-base-content/70 mt-2">
           Search stocks and build your portfolio

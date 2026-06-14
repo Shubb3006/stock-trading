@@ -4,7 +4,6 @@ import React, { useEffect, useMemo, useState } from "react";
 import {
   Building2,
   IndianRupee,
-  Loader,
   Loader2,
   TrendingUp,
 } from "lucide-react";
@@ -53,8 +52,8 @@ const StockDetail = ({ stock }) => {
   const { authUser } = useAuthStore();
 
   useEffect(() => {
-    getWatchList();
-  }, []);
+    if (watchList.length === 0) getWatchList();
+  }, [getWatchList]);
 
   useEffect(() => {
     if (authUser) {
