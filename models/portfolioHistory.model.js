@@ -14,6 +14,9 @@ const portfolioHistorySchema=mongoose.Schema({
       type: Number,
       default: 0,
     },
+    cash:{
+      type:Number,
+    },
     totalPnL: {
       type: Number,
       default: 0,

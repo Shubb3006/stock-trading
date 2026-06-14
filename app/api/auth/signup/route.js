@@ -40,6 +40,7 @@ export async function POST(req,res){
         const user = await User.create({
             name,
             email:email.toLowerCase(),
+            cash:10000,
             password: hashedPassword,
           });
           
@@ -49,7 +50,7 @@ export async function POST(req,res){
               id: user._id,
               name: user.name,
               email: user.email,
-              isAdmin:user.isAdmin
+              cash:user.cash
             },
           });
             generateToken(user._id,res);

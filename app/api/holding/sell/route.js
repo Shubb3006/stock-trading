@@ -21,6 +21,10 @@ export async function POST(req){
         const sellQty=Number(quantity);
 
         const stock = await Stock.findById(stockId);
+
+        const totalCost = quantity * stock.currentPrice;
+        user.cash+=totalCost;
+        await user.save();
     
         if (!stockId || !sellQty || sellQty <= 0) {
           return NextResponse.json(

@@ -6,12 +6,14 @@ import Link from "next/link";
 import React, { useEffect } from "react";
 import { usePortfolioStore } from "@/store/useProtfolioStore";
 import PortfolioChart from "@/app/components/portfolio/PortfolioChart";
+import { useAuthStore } from "@/store/useAuthStore";
 
 const page = () => {
   const { holdings, getHoldings, isFetchingHoldings } = useHoldingStore();
   const { getStocks, refreshStocks, stocks } = useStockStore();
   const { portfolioHistory, getPortfolioHistory, createPortfolioSnapshot } =
     usePortfolioStore();
+  const { authUser } = useAuthStore();
 
   const getLivePrice = (stockId) => {
     const liveStock = stocks.find((s) => s._id === stockId);
@@ -45,12 +47,13 @@ const page = () => {
     0
   );
 
-  const currentValue = holdings.reduce(
+  const holdingsValue = holdings.reduce(
     (acc, h) => acc + h.quantity * getLivePrice(h.stockId._id),
     0
   );
+  const currentValue = holdingsValue + authUser.cash;
 
-  const pnl = currentValue - investedAmount;
+  const pnl = holdingsValue - investedAmount;
   const percentage = investedAmount > 0 ? (pnl / investedAmount) * 100 : 0;
 
   const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
@@ -67,8 +70,13 @@ const page = () => {
     return currentDiff < closestDiff ? current : closest;
   }, null);
 
-  const oldValue = history24h?.totalValue || currentValue;
-
+  // const oldValue = history24h?.totalValue + history24h?.cash || currentValue;
+  const oldValue = history24h
+  ? history24h.totalValue + (history24h.cash || 0)
+  : currentValue;
+  console.log(history24h);
+  console.log("oldValue", oldValue);
+  console.log("current", currentValue);
   const dayPnl = currentValue - oldValue;
 
   const dayPnlPercent = oldValue > 0 ? (dayPnl / oldValue) * 100 : 0;
@@ -110,7 +118,7 @@ const page = () => {
             <div className="card-body">
               <p className="text-base-content/60">Current Value</p>
               <h2 className="text-3xl font-bold">
-                ₹{currentValue.toLocaleString()}
+                ₹{holdingsValue.toLocaleString()}
               </h2>
             </div>
           </div>

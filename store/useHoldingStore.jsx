@@ -2,6 +2,7 @@ import axiosInstance from "@/lib/axios";
 import toast from "react-hot-toast";
 import { create } from "zustand";
 import { useTransactionsStore } from "./useTransactionsStore";
+import { useAuthStore } from "./useAuthStore";
 
 export const useHoldingStore = create((set) => ({
   holdings: [],
@@ -45,6 +46,7 @@ export const useHoldingStore = create((set) => ({
         }
       });
       await useTransactionsStore.getState().getAllTransactions();
+      await useAuthStore.getState().refreshUser();
 
       toast.success("Stock Bought");
     } catch (error) {
@@ -76,7 +78,10 @@ export const useHoldingStore = create((set) => ({
 
         return { holdings: updated };
       });
+
       await useTransactionsStore.getState().getAllTransactions();
+      await useAuthStore.getState().refreshUser();
+
       toast.success("Stock sold");
     } catch (error) {
       toast.error(error.response?.data?.message || "Something went wrong");

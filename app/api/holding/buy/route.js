@@ -18,8 +18,6 @@ export async function POST(req) {
       );
     }
 
-
-
     const { stockId, quantity } = await req.json();
 
     const finalquantity=Number(quantity);
@@ -31,6 +29,17 @@ export async function POST(req) {
     }
 
     const stock = await Stock.findById(stockId);
+    const totalCost = finalquantity * stock.currentPrice;
+
+    if (user.cash < totalCost) {
+      return NextResponse.json(
+        { status: "error", message: "Insufficient cash" },
+        { status: 400 }
+      );
+    }
+
+    user.cash -= totalCost;
+    await user.save();
 
     if (!stock) {
       return NextResponse.json(
@@ -74,6 +83,8 @@ export async function POST(req) {
         price: stock.currentPrice,
         totalAmount: finalquantity * stock.currentPrice,
       });
+
+
     await updatedHolding.populate("stockId");
     // const holdings = await Holding.find({
     //   userId: user._id,
