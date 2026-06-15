@@ -10,8 +10,9 @@ import {
 } from "recharts";
 
 const PortfolioChart = ({ data }) => {
+  console.log(data);
   const [range, setRange] = useState("1Y");
-  
+
   const filteredData = useMemo(() => {
     const now = new Date();
 
@@ -61,7 +62,7 @@ const PortfolioChart = ({ data }) => {
             </div>
           </div>
         </div>
-        <div className="flex justify-end px-4 mb-2">
+        <div className="flex justify-end mb-2">
           <div className="flex gap-2">
             {["1HR", "1D", "5D", "1M", "1Y", "5Y"].map((r) => (
               <button

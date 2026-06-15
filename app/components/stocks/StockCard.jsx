@@ -7,14 +7,14 @@ const StockCard = ({ stock }) => {
     <Link href={`/stocks/${stock.symbol}`}>
       <div className="h-full card bg-base-100 shadow-md border hover:shadow-2xl transition-all duration-300 cursor-pointer  hover:scale-110 hover:z-50">
         <div className="card-body">
-          <div className="flex justify-between items-start">
-            <div>
+          <div className="flex justify-between items-start gap-2">
+            <div className="min-w-0">
               <h2 className="card-title text-xl">{stock.symbol}</h2>
 
               <p className="text-sm text-gray-500">{stock.name}</p>
             </div>
 
-            <div className="badge badge-outline">{stock.sector}</div>
+            <div className="badge badge-outline shrink-0">{stock.sector}</div>
           </div>
 
           <div className="mt-4">

@@ -9,7 +9,6 @@ export async function POST(req){
     try {
         await connectDB();
         const user=await getUserFromCookie(req);
-        console.log(user.cash)
         if (!user) {
             return NextResponse.json(
               { status: "error", message: "Unauthorized" },

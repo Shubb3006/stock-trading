@@ -2,6 +2,7 @@ import axiosInstance from "@/lib/axios";
 import toast from "react-hot-toast";
 import { create } from "zustand";
 import { useHoldingStore } from "./useHoldingStore";
+import { usePortfolioStore } from "./useProtfolioStore";
 
 export const useAuthStore = create((set) => ({
   authUser: null,
@@ -67,6 +68,7 @@ export const useAuthStore = create((set) => ({
       const res = await axiosInstance.post("/auth/logout");
       set({ authUser: null });
       useHoldingStore.getState().clearHoldings();
+      usePortfolioStore.getState().clearPortfolio();
       toast.success("Logout succesfull");
       return true;
     } catch (error) {

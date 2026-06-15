@@ -51,7 +51,7 @@ const page = () => {
     (acc, h) => acc + h.quantity * getLivePrice(h.stockId._id),
     0
   );
-  const currentValue = holdingsValue + authUser.cash;
+  const currentValue = holdingsValue + authUser?.cash;
 
   const pnl = holdingsValue - investedAmount;
   const percentage = investedAmount > 0 ? (pnl / investedAmount) * 100 : 0;
@@ -72,8 +72,8 @@ const page = () => {
 
   // const oldValue = history24h?.totalValue + history24h?.cash || currentValue;
   const oldValue = history24h
-  ? history24h.totalValue + (history24h.cash || 0)
-  : currentValue;
+    ? history24h.totalValue + (history24h.cash || 0)
+    : currentValue;
   console.log(history24h);
   console.log("oldValue", oldValue);
   console.log("current", currentValue);
@@ -90,11 +90,15 @@ const page = () => {
     invested: item.totalInvested,
     value: item.totalValue,
   }));
+  // console.log(portfolioHistory);
+  // console.log(chartData);
 
   return (
     <div className="min-h-[calc(100vh-64px)] bg-base-200">
       <div className="max-w-6xl mx-auto p-6">
-        <PortfolioChart data={chartData} />
+        {chartData.length>0 &&
+        <PortfolioChart data={chartData} /> 
+}
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold">My Portfolio</h1>

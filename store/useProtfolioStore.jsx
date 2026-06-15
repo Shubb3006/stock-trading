@@ -17,6 +17,8 @@ export const usePortfolioStore = create((set) => ({
       set({ isFetchingPortfolioHistory: false });
     }
   },
+  
+  clearPortfolio: () => set({ portfolioHistory: [] }),
 
   createPortfolioSnapshot: async () => {
     try {
