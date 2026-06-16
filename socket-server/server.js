@@ -16,9 +16,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: ["https://stock-trading-ruby.vercel.app/","http://localhost:3000",
-      
-    ],
+    origin: ["https://stock-trading-ruby.vercel.app","http://localhost:3000"],
     credentials:true // Next.js frontend
   },
 });
