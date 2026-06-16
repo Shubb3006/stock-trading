@@ -91,7 +91,7 @@
     }
 
     io.emit("priceUpdate", stocks);
-  }, 1000);
+  }, 5000);
 
   server.listen(8000, () => {
       loadStocks();

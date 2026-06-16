@@ -101,6 +101,8 @@ export const useStockStore = create((set) => ({
       });
     });
   },
+
+  
   // connectSocket: (selectedSymbol) => {
   //   socket.on("priceUpdate", (updatedStocks) => {
   //     set((state) => {
@@ -120,7 +122,7 @@ export const useStockStore = create((set) => ({
   //             price: currentStock.currentPrice,
   //             createdAt: new Date(),
   //           },
-  //         ].slice(-100),
+  //         ].slice(-1000),
   //       };
   //     });
   //   });
