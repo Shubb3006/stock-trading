@@ -59,7 +59,7 @@ export const useStockStore = create((set) => ({
   clearPriceHistory: async () => {
     set({
       priceHistory: [],
-    })
+    });
   },
 
   refreshStocks: async () => {
@@ -95,14 +95,34 @@ export const useStockStore = create((set) => ({
   },
 
   connectSocket: () => {
-    socket.on("priceUpdate", (stocks) => {
-      const priceMap = {};
-
-      stocks.forEach((s) => {
-        priceMap[s._id] = s.currentPrice;
+    socket.on("priceUpdate", (updatedStocks) => {
+      set({
+        stocks: updatedStocks,
       });
-
-      set({ livePrices: priceMap });
     });
   },
+  // connectSocket: (selectedSymbol) => {
+  //   socket.on("priceUpdate", (updatedStocks) => {
+  //     set((state) => {
+  //       const currentStock = updatedStocks.find(
+  //         (s) => s.symbol === selectedSymbol
+  //       );
+
+  //       if (!currentStock) {
+  //         return { stocks: updatedStocks };
+  //       }
+
+  //       return {
+  //         stocks: updatedStocks,
+  //         priceHistory: [
+  //           ...state.priceHistory,
+  //           {
+  //             price: currentStock.currentPrice,
+  //             createdAt: new Date(),
+  //           },
+  //         ].slice(-100),
+  //       };
+  //     });
+  //   });
+  // },
 }));

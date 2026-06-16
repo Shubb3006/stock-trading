@@ -12,11 +12,11 @@ const page = () => {
   useEffect(() => {
     if (stocks.length === 0) getStocks();
 
-    const interval = setInterval(() => {
-      refreshStocks();
-    }, 5000); // every 5 seconds
+    // const interval = setInterval(() => {
+    //   refreshStocks();
+    // }, 5000); // every 5 seconds
 
-    return () => clearInterval(interval);
+    // return () => clearInterval(interval);
   }, [getStocks, refreshStocks]);
 
   if (fetchingStocks) return <StocksPageSkeleton />;

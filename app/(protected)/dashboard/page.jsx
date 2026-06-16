@@ -35,11 +35,11 @@ const page = () => {
   useEffect(() => {
     getStocks();
 
-    const interval = setInterval(() => {
-      refreshStocks();
-    }, 5000); // every 5 seconds
+    // const interval = setInterval(() => {
+    //   refreshStocks();
+    // }, 5000); // every 5 seconds
 
-    return () => clearInterval(interval);
+    // return () => clearInterval(interval);
   }, [getStocks, refreshStocks]);
 
   const investedAmount = holdings.reduce(

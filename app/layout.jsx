@@ -3,6 +3,7 @@ import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import AuthProvider from "./AuthProvider";
 import Navbar from "./components/Navbar";
+import SocketProvider from "./SocketProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,15 +28,17 @@ export default function RootLayout({ children }) {
     >
       <body className="min-h-full flex flex-col">
         <AuthProvider>
-          <Navbar />
-          {children}
+          <SocketProvider>
+            <Navbar />
+            {children}
 
-          <Toaster
-            position="top-center"
-            toastOptions={{
-              duration: 2000,
-            }}
-          />
+            <Toaster
+              position="top-center"
+              toastOptions={{
+                duration: 2000,
+              }}
+            />
+          </SocketProvider>
         </AuthProvider>
       </body>
     </html>

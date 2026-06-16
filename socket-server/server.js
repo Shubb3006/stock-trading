@@ -5,6 +5,7 @@ import { Server } from "socket.io";
 import cors from "cors"
 import { connectDB } from "./db.js";
 import Stock from "./models/Stock.js";
+import  PriceHistory  from "./models/priceHistory.js";
 
 const app = express();
 
@@ -56,17 +57,39 @@ console.log(stocks);
 
 
 // 🔥 PRICE ENGINE (REAL TIME SIMULATION)
-setInterval(() => {
-  stocks = stocks.map((stock) => {
+// setInterval(() => {
+//   stocks = stocks.map((stock) => {
+//     const change = (Math.random() - 0.5) * 10;
+//     return {
+//       ...stock,
+//       currentPrice: Number((stock.currentPrice + change).toFixed(2)),
+//     };
+//   });
+
+//   io.emit("priceUpdate", stocks);
+// }, 2000);
+
+setInterval(async () => {
+  for (const stock of stocks) {
     const change = (Math.random() - 0.5) * 10;
-    return {
-      ...stock,
-      currentPrice: Number((stock.currentPrice + change).toFixed(2)),
-    };
-  });
+
+    const newPrice = Number(
+      (stock.currentPrice + change).toFixed(2)
+    );
+
+    stock.currentPrice = newPrice;
+
+    await Stock.findByIdAndUpdate(stock._id, {
+      currentPrice: newPrice,
+    });
+    await PriceHistory.create({
+      stockId: stock._id,
+      price: newPrice,
+    });
+  }
 
   io.emit("priceUpdate", stocks);
-}, 2000);
+}, 1000);
 
 server.listen(8000, () => {
     loadStocks();

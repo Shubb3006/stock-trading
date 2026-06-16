@@ -75,9 +75,9 @@ const StockDetail = ({ stock }) => {
     getPriceHistory(stock.symbol);
 
     const interval = setInterval(() => {
-      refreshStocks();
+      // refreshStocks();
       refreshPriceHistory(stock.symbol);
-    }, 5000);
+    }, 1000);
 
     return () => clearInterval(interval);
   }, [stock.symbol]);
@@ -398,7 +398,7 @@ const StockDetail = ({ stock }) => {
                 <button
                   className="btn btn-primary flex-1"
                   onClick={handleBuy}
-                  disabled={isBuyingStock  || isSellingStock || quantity <= 0}
+                  disabled={isBuyingStock || isSellingStock || quantity <= 0}
                 >
                   {isBuyingStock ? (
                     <Loader2 className="animate-spin" />
@@ -412,7 +412,7 @@ const StockDetail = ({ stock }) => {
                     onClick={handleSell}
                     disabled={
                       isSellingStock ||
-                      isBuyingStock||
+                      isBuyingStock ||
                       quantity <= 0 ||
                       quantity > isHoldingThisStock.quantity
                     }
