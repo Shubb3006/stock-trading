@@ -79,7 +79,10 @@ const page = () => {
   console.log("current", currentValue);
   const dayPnl = currentValue - oldValue;
 
-  const dayPnlPercent = oldValue > 0 ? (dayPnl / oldValue) * 100 : 0;
+  const dayPnlPercent =
+    investedAmount > 0 ? (dayPnl / investedAmount) * 100 : 0;
+  console.log(currentValue);
+  console.log(oldValue);
 
   if (isFetchingHoldings) {
     return <DashboardSkeleton />;
@@ -96,9 +99,7 @@ const page = () => {
   return (
     <div className="min-h-[calc(100vh-64px)] bg-base-200">
       <div className="max-w-6xl mx-auto p-6">
-        {chartData.length>0 &&
-        <PortfolioChart data={chartData} /> 
-}
+        {chartData.length > 0 && <PortfolioChart data={chartData} />}
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold">My Portfolio</h1>
