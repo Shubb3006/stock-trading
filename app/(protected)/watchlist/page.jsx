@@ -7,10 +7,12 @@ import { useWatchListStore } from "@/store/useWatchListStore";
 import React, { useEffect, useState } from "react";
 
 const Page = () => {
-  const { watchList, getWatchList, isFetchingWatchList } = useWatchListStore();
+  const { watchList, getWatchList, isFetchingWatchList, connectSocket } =
+    useWatchListStore();
   const [search, setSearch] = useState("");
 
   useEffect(() => {
+    connectSocket();
     if (watchList.length === 0) getWatchList();
   }, [getWatchList]);
 
