@@ -77,7 +77,7 @@ const StockDetail = ({ stock }) => {
     const interval = setInterval(() => {
       // refreshStocks();
       refreshPriceHistory(stock.symbol);
-    }, 1000);
+    }, 5000);
 
     return () => clearInterval(interval);
   }, [stock.symbol]);
