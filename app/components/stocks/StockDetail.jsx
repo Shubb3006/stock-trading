@@ -398,7 +398,7 @@ const StockDetail = ({ stock }) => {
                 <button
                   className="btn btn-primary flex-1"
                   onClick={handleBuy}
-                  disabled={isBuyingStock || quantity <= 0}
+                  disabled={isBuyingStock  || isSellingStock || quantity <= 0}
                 >
                   {isBuyingStock ? (
                     <Loader2 className="animate-spin" />
@@ -412,6 +412,7 @@ const StockDetail = ({ stock }) => {
                     onClick={handleSell}
                     disabled={
                       isSellingStock ||
+                      isBuyingStock||
                       quantity <= 0 ||
                       quantity > isHoldingThisStock.quantity
                     }
