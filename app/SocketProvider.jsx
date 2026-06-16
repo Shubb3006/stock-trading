@@ -9,6 +9,13 @@ export default function SocketProvider({ children }) {
 
   useEffect(() => {
     socket.connect();
+    socket.on("connect", () => {
+        console.log("Connected:", socket.id);
+      });
+      
+      socket.on("connect_error", (err) => {
+        console.log("Socket error:", err.message);
+      });
 
     connectSocket();
 
