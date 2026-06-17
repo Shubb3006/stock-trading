@@ -38,6 +38,7 @@ const StockDetail = ({ stock }) => {
     refreshStocks,
     getPriceHistory,
     priceHistory,
+    connectSocket,
     fetchingHistory,
     refreshPriceHistory,
     clearPriceHistory,
@@ -73,13 +74,16 @@ const StockDetail = ({ stock }) => {
 
     getStocks();
     getPriceHistory(stock.symbol);
+    // conxnectSocket(stock.symbol);
 
     const interval = setInterval(() => {
       // refreshStocks();
       refreshPriceHistory(stock.symbol);
     }, 5000);
 
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+    };
   }, [stock.symbol]);
 
   const isInWatchList = watchList.some((w) => {

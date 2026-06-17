@@ -102,7 +102,6 @@ export const useStockStore = create((set) => ({
     });
   },
 
-  
   // connectSocket: (selectedSymbol) => {
   //   socket.on("priceUpdate", (updatedStocks) => {
   //     set((state) => {

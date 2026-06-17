@@ -74,16 +74,13 @@ const page = () => {
   const oldValue = history24h
     ? history24h.totalValue + (history24h.cash || 0)
     : currentValue;
-  console.log(history24h);
-  console.log("oldValue", oldValue);
-  console.log("current", currentValue);
+
+  console.log(oldValue);
+  console.log(currentValue);
   const dayPnl = currentValue - oldValue;
 
   const dayPnlPercent =
     investedAmount > 0 ? (dayPnl / investedAmount) * 100 : 0;
-  console.log(currentValue);
-  console.log(oldValue);
-
   if (isFetchingHoldings) {
     return <DashboardSkeleton />;
   }

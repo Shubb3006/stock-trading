@@ -12,7 +12,6 @@ export default function StockChart({ data, range }) {
   const startPrice = data[0]?.price;
   const endPrice = data[data.length - 1]?.price;
   const totalChange = endPrice - startPrice;
-  console.log(totalChange);
   let percentage =
     startPrice && endPrice ? Math.abs((totalChange / startPrice) * 100) : 0;
   const isPositive = totalChange > 0;
