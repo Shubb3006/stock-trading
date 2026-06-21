@@ -17,6 +17,8 @@ import StockChart from "./StockChart";
 import StockChartSkeleton from "../skeletons/StockChartSkeleton";
 import { useWatchListStore } from "@/store/useWatchListStore";
 import { usePathname } from "next/navigation";
+import { useAiStore } from "@/store/useAiStore";
+import StockAnalysis from "./StockAnalysis";
 
 const StockDetail = ({ stock }) => {
   const [range, setRange] = useState("1D");
@@ -53,6 +55,9 @@ const StockDetail = ({ stock }) => {
     isDeletingFromWatchList,
   } = useWatchListStore();
 
+  const { analyzeStock, isAnalysingStock, stockAnalysis, clearAnalyzeStock } =
+    useAiStore();
+
   const { authUser } = useAuthStore();
 
   useEffect(() => {
@@ -83,6 +88,7 @@ const StockDetail = ({ stock }) => {
 
     return () => {
       clearInterval(interval);
+      clearAnalyzeStock();
     };
   }, [stock.symbol]);
 
@@ -155,6 +161,9 @@ const StockDetail = ({ stock }) => {
     });
   }, [chartData, range]);
 
+  const recentHistpry = priceHistory.slice(-40);
+  console.log(recentHistpry);
+
   async function toggleWishlist(stockId) {
     if (isInWatchList) {
       await deleteFromWatchList(stockId);
@@ -223,7 +232,31 @@ const StockDetail = ({ stock }) => {
               <p className="text-base-content/60">Current Price</p>
             </div>
           </div>
+          <div className="flex gap-2">
+            <button
+              className="btn btn-primary gap-2 shadow-lg hover:scale-105 transition-all duration-300"
+              disabled={fetchingHistory || isAnalysingStock}
+              onClick={() =>
+                analyzeStock({
+                  stock,
+                  recentHistpry,
+                })
+              }
+            >
+              {isAnalysingStock ? (
+                <>
+                  <Loader2 className="size-5 animate-spin" />
+                  Analyzing...
+                </>
+              ) : (
+                <>🤖 AI Stock Analysis</>
+              )}
+            </button>
+          </div>
         </div>
+
+        <StockAnalysis analysis={stockAnalysis} />
+
         <div className="flex justify-end px-4 mb-2">
           <div className="flex gap-2">
             {["1HR", "1D", "5D", "1M", "1Y", "5Y"].map((r) => (

@@ -5,12 +5,14 @@ import React, { useEffect } from "react";
 import { useStockStore } from "@/store/useStockStore";
 import StockDetail from "@/app/components/stocks/StockDetail";
 import StockDetailSkeleton from "@/app/components/skeletons/StockDetailSkeleton";
+import { useAiStore } from "@/store/useAiStore";
 
 export default function Page() {
   const { symbol } = useParams();
 
   const { getStockDetail, selectedStock, fetchingStockDetail } =
     useStockStore();
+    
 
   useEffect(() => {
     if (symbol) {

@@ -3,17 +3,26 @@ import DashboardSkeleton from "@/app/components/skeletons/DashboardSkeleton";
 import { useHoldingStore } from "@/store/useHoldingStore";
 import { useStockStore } from "@/store/useStockStore";
 import Link from "next/link";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { usePortfolioStore } from "@/store/useProtfolioStore";
 import PortfolioChart from "@/app/components/portfolio/PortfolioChart";
 import { useAuthStore } from "@/store/useAuthStore";
+import { useAiStore } from "@/store/useAiStore";
+import { Loader, Loader2 } from "lucide-react";
+import PortfolioAnalysis from "@/app/components/portfolio/PortfolioAnalysis";
+import PortfolioChatResponse from "@/app/components/portfolio/PortfolioChat";
 
 const page = () => {
   const { holdings, getHoldings, isFetchingHoldings } = useHoldingStore();
   const { getStocks, refreshStocks, stocks } = useStockStore();
   const { portfolioHistory, getPortfolioHistory, createPortfolioSnapshot } =
     usePortfolioStore();
+  const { portfolioAnalysis, analyzePortfolio, isAnalysingPortfolio } =
+    useAiStore();
   const { authUser } = useAuthStore();
+
+  const { aiChat, answer, isAnsweringQuestion } = useAiStore();
+  const [question, setQuestion] = useState("");
 
   const getLivePrice = (stockId) => {
     const liveStock = stocks.find((s) => s._id === stockId);
@@ -93,16 +102,154 @@ const page = () => {
   // console.log(portfolioHistory);
   // console.log(chartData);
 
+  console.log(portfolioAnalysis);
+
   return (
     <div className="min-h-[calc(100vh-64px)] bg-base-200">
       <div className="max-w-6xl mx-auto p-6">
-        {chartData.length > 0 && <PortfolioChart data={chartData} />}
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold">My Portfolio</h1>
-          <p className="text-base-content/70 mt-2">
-            Track your investments and performance.
-          </p>
+        <div className="flex justify-between mb-8">
+          <div>
+            <h1 className="text-4xl font-bold">My Portfolio</h1>
+            <p className="text-base-content/70 mt-2">
+              Track your investments and performance.
+            </p>
+          </div>
+
+          <button
+            className="btn btn-primary gap-2 shadow-lg hover:scale-105 transition-all duration-300"
+            disabled={isAnalysingPortfolio}
+            onClick={() =>
+              analyzePortfolio({
+                holdings,
+                cash: authUser.cash,
+                investedAmount,
+                currentValue,
+                pnl,
+                dayPnl,
+              })
+            }
+          >
+            {isAnalysingPortfolio ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Analyzing...
+              </>
+            ) : (
+              <>🤖 AI Dashboard Analysis</>
+            )}
+          </button>
+        </div>
+        <PortfolioAnalysis analysis={portfolioAnalysis} />
+
+        {chartData.length > 0 && <PortfolioChart data={chartData} />}
+
+        <div className="card bg-base-100 shadow-xl border border-base-300 mb-10">
+          <div className="card-body">
+            {/* Header */}
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 rounded-full bg-primary text-primary-content flex items-center justify-center text-xl font-bold">
+                AI
+              </div>
+
+              <div>
+                <h2 className="text-2xl font-bold">AI Portfolio Assistant</h2>
+
+                <p className="text-base-content/60">
+                  Ask questions about your portfolio, profits, risk,
+                  allocations, and holdings.
+                </p>
+              </div>
+            </div>
+
+            {/* Suggested Questions */}
+            <div className="flex flex-wrap gap-2 mb-5">
+              <button
+                type="button"
+                className="btn btn-sm btn-outline"
+                onClick={() =>
+                  setQuestion("Which stock is generating the most profit?")
+                }
+              >
+                Top Profit Stock
+              </button>
+
+              <button
+                type="button"
+                className="btn btn-sm btn-outline"
+                onClick={() =>
+                  setQuestion("What is the biggest risk in my portfolio?")
+                }
+              >
+                Portfolio Risk
+              </button>
+
+              <button
+                type="button"
+                className="btn btn-sm btn-outline"
+                onClick={() => setQuestion("Am I diversified enough?")}
+              >
+                Diversification
+              </button>
+
+              <button
+                type="button"
+                className="btn btn-sm btn-outline"
+                onClick={() => setQuestion("Should I deploy my cash?")}
+              >
+                Cash Usage
+              </button>
+            </div>
+
+            {/* Input */}
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+
+                aiChat({
+                  question,
+                  portfolio: {
+                    holdings,
+                    cash: authUser.cash,
+                    investedAmount,
+                    currentValue,
+                    pnl,
+                    dayPnl,
+                  },
+                });
+              }}
+              className="flex flex-col md:flex-row gap-3"
+            >
+              <input
+                value={question}
+                onChange={(e) => setQuestion(e.target.value)}
+                className="input input-bordered w-full"
+                placeholder="Ask anything about your portfolio..."
+              />
+
+              <button
+                disabled={isAnsweringQuestion || !question.trim()}
+                className="btn btn-primary min-w-[120px]"
+                type="submit"
+              >
+                {isAnsweringQuestion ? (
+                  <>
+                   <Loader2 className="animate-spin"/>
+                    Thinking
+                  </>
+                ) : (
+                  "Ask AI"
+                )}
+              </button>
+            </form>
+
+            {/* AI Response */}
+            {answer && (
+              <div className="mt-6">
+                <PortfolioChatResponse response={answer} />
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Summary Cards */}

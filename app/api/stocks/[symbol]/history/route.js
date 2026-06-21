@@ -27,17 +27,17 @@ export async function GET(req, { params }) {
       stockId: stock._id,
     });
 
-    if (count > 10000) {
-        const oldestRecords = await PriceHistory.find({
-          stockId: stock._id,
-        })
-          .sort({ createdAt: 1 })
-          .limit(count - 10000);
+    // if (count > 10000) {
+    //     const oldestRecords = await PriceHistory.find({
+    //       stockId: stock._id,
+    //     })
+    //       .sort({ createdAt: 1 })
+    //       .limit(count - 10000);
       
-        await PriceHistory.deleteMany({
-          _id: { $in: oldestRecords.map((r) => r._id) },
-        });
-      }
+    //     await PriceHistory.deleteMany({
+    //       _id: { $in: oldestRecords.map((r) => r._id) },
+    //     });
+    //   }
 
     return NextResponse.json({count:history.length, history});
   } catch (error) {
