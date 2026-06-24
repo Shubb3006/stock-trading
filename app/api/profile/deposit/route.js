@@ -28,7 +28,7 @@ export async function PATCH(req){
 
        const updated=await User.findByIdAndUpdate(user._id,
         {$inc:{cash:depositedAmount}},
-        {new:true})
+        {returnDocument:"after"})
         .select("-password");
 
         const transaction=await Transaction.create({
