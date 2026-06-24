@@ -168,6 +168,12 @@ const Navbar = () => {
                     </Link>
                   </li>
 
+                  <li>
+                    <Link href="/profile" className={linkClass("/profile")}>
+                      My Profile
+                    </Link>
+                  </li>
+
                   <li className="bg-primary px-2 py-1">
                     <span className="font-medium">
                       Hi,{" "}
