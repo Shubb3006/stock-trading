@@ -11,6 +11,7 @@ import { useAiStore } from "@/store/useAiStore";
 import { Loader, Loader2 } from "lucide-react";
 import PortfolioAnalysis from "@/app/components/portfolio/PortfolioAnalysis";
 import PortfolioChatResponse from "@/app/components/portfolio/PortfolioChat";
+import { useTransactionsStore } from "@/store/useTransactionsStore";
 
 const page = () => {
   const { holdings, getHoldings, isFetchingHoldings } = useHoldingStore();
@@ -21,6 +22,9 @@ const page = () => {
     useAiStore();
   const { authUser } = useAuthStore();
 
+  const { getAllTransactions, transactions, isFetchingTransactions } =
+    useTransactionsStore();
+
   const { aiChat, answer, isAnsweringQuestion } = useAiStore();
   const [question, setQuestion] = useState("");
 
@@ -30,7 +34,8 @@ const page = () => {
   };
   useEffect(() => {
     if (holdings.length === 0) getHoldings();
-  }, [getHoldings]);
+    if (transactions.length === 0) getAllTransactions();
+  }, [getHoldings, getAllTransactions]);
 
   useEffect(() => {
     async function loadData() {
@@ -51,19 +56,24 @@ const page = () => {
     // return () => clearInterval(interval);
   }, [getStocks, refreshStocks]);
 
+  //total invested amount
   const investedAmount = holdings.reduce(
     (acc, h) => acc + h.quantity * h.averageBuyPrice,
     0
   );
 
+  ///total holding value
   const holdingsValue = holdings.reduce(
     (acc, h) => acc + h.quantity * getLivePrice(h.stockId._id),
     0
   );
-  const currentValue = holdingsValue + authUser?.cash;
 
+  //total profit/loss
   const pnl = holdingsValue - investedAmount;
   const percentage = investedAmount > 0 ? (pnl / investedAmount) * 100 : 0;
+
+  //current holding + current cash
+  const currentValue = holdingsValue + authUser?.cash;
 
   const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
 
@@ -79,18 +89,29 @@ const page = () => {
     return currentDiff < closestDiff ? current : closest;
   }, null);
 
+  const last24hTransactions = transactions.filter(
+    (t) => new Date(t.createdAt).getTime() >= oneDayAgo
+  );
+
+  const deposits = last24hTransactions
+    .filter((t) => t.type === "DEPOSIT")
+    .reduce((sum, t) => sum + t.totalAmount, 0);
+
+  const withdrawals = last24hTransactions
+    .filter((t) => t.type === "WITHDRAW")
+    .reduce((sum, t) => sum + t.totalAmount, 0);
+
   // const oldValue = history24h?.totalValue + history24h?.cash || currentValue;
   const oldValue = history24h
     ? history24h.totalValue + (history24h.cash || 0)
     : currentValue;
 
-  console.log(oldValue);
-  console.log(currentValue);
-  const dayPnl = currentValue - oldValue;
+  
+  const dayPnl = currentValue - oldValue - deposits + withdrawals;
 
   const dayPnlPercent =
     investedAmount > 0 ? (dayPnl / investedAmount) * 100 : 0;
-  if (isFetchingHoldings) {
+  if (isFetchingHoldings || isFetchingTransactions) {
     return <DashboardSkeleton />;
   }
 
@@ -234,7 +255,7 @@ const page = () => {
               >
                 {isAnsweringQuestion ? (
                   <>
-                   <Loader2 className="animate-spin"/>
+                    <Loader2 className="animate-spin" />
                     Thinking
                   </>
                 ) : (

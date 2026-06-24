@@ -4,7 +4,6 @@ const transactionSchema=mongoose.Schema({
     stockId:{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Stock",
-        required: true,
     },
     userId:{
         type: mongoose.Schema.Types.ObjectId,
@@ -13,23 +12,22 @@ const transactionSchema=mongoose.Schema({
     },
     type:{
         type:String,
-        enum:["BUY","SELL"],
+        enum:["BUY","SELL","DEPOSIT","WITHDRAW"],
         required:true
     },
     quantity: {
         type: Number,
-        required: true,
     },
   
     price: {
         type: Number,
-        required: true,
     },
   
     totalAmount: {
         type: Number,
         required: true,
     },
+    
     realizedPnl: {
         type: Number,
         default: 0,

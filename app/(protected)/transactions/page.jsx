@@ -1,24 +1,46 @@
 "use client";
 import DashboardSkeleton from "@/app/components/skeletons/DashboardSkeleton";
 import { useTransactionsStore } from "@/store/useTransactionsStore";
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 const page = () => {
   const { getAllTransactions, transactions, isFetchingTransactions } =
     useTransactionsStore();
   useEffect(() => {
     if (transactions.length === 0) getAllTransactions();
-  }, []);
+  }, [transactions.length]);
+  const [filter, setFilter] = useState("ALL");
 
-  if (isFetchingTransactions) return <DashboardSkeleton />;
   const totalRealizedPL = transactions
     .filter((t) => t.type === "SELL")
     .reduce((acc, t) => acc + (t.realizedPnl || 0), 0);
+
+  const filteredTransactions = useMemo(() => {
+    return transactions.filter((t) => {
+      if (filter === "ALL") return true;
+      if (filter === "TRADES") return t.type === "SELL" || t.type === "BUY";
+      if (filter === "CASH")
+        return t.type === "DEPOSIT" || t.type === "WITHDRAW";
+      return true;
+    });
+  }, [transactions, filter]);
+
+  if (isFetchingTransactions) return <DashboardSkeleton />;
+
   return (
     <div className="min-h-[calc(100vh-64px)] bg-base-200">
       <div className="max-w-6xl mx-auto p-6">
         <div className="mb-8 flex flex-col md:flex-row gap-4 justify-between items-center">
           <h1 className="text-4xl font-bold">My Transactions</h1>
+          <select
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+            className="select select-bordered"
+          >
+            <option value="ALL">All</option>
+            <option value="TRADES">Trades</option>
+            <option value="CASH">Cash</option>
+          </select>
           <div className="text-right">
             <p className="text-sm opacity-70">Total Realized P&L</p>
             <p
@@ -31,10 +53,9 @@ const page = () => {
             </p>
           </div>
         </div>
-
         <div className="card bg-base-100 shadow-lg">
           <div className="card-body">
-            {transactions.length === 0 ? (
+            {filteredTransactions.length === 0 ? (
               <div className="text-center py-10">
                 <p className="text-lg font-semibold">No Transactions Yet</p>
                 <p className="opacity-70">
@@ -57,12 +78,18 @@ const page = () => {
                   </thead>
 
                   <tbody>
-                    {transactions.map((t) => (
+                    {filteredTransactions.map((t) => (
                       <tr key={t._id}>
                         <td>
                           <span
                             className={`badge ${
-                              t.type === "BUY" ? "badge-success" : "badge-error"
+                              t.type === "BUY"
+                                ? "badge-success"
+                                : t.type === "SELL"
+                                ? "badge-error"
+                                : t.type === "DEPOSIT"
+                                ? "badge-primary"
+                                : "badge-warning"
                             }`}
                           >
                             {t.type}
@@ -70,17 +97,21 @@ const page = () => {
                         </td>
 
                         <td>
-                          <div>
-                            <p className="font-bold">{t.stockId?.symbol}</p>
-                            <p className="text-xs opacity-70">
-                              {t.stockId.name}
-                            </p>
-                          </div>
+                          {t.stockId ? (
+                            <div>
+                              <p className="font-bold">{t.stockId?.symbol}</p>
+                              <p className="text-xs opacity-70">
+                                {t.stockId.name}
+                              </p>
+                            </div>
+                          ) : (
+                            "-"
+                          )}
                         </td>
 
-                        <td>{t.quantity}</td>
-                        <td>₹{t.price.toLocaleString()}</td>
-                        <td>₹{t.totalAmount.toLocaleString()}</td>
+                        <td>{t.quantity ?? "-"}</td>
+                        <td>₹{t?.price?.toLocaleString() ?? "-"}</td>
+                        <td>₹{(t?.totalAmount || 0).toLocaleString()}</td>
                         <td>
                           {t.type === "SELL" ? (
                             <span

@@ -16,7 +16,7 @@ export async function GET(req){
           );
         }
 
-        const holdings=await Holding.find({userId:user._id}).populate("stockId");
+        const holdings=await Holding.find({userId:user._id}).populate("stockId").populate("userId");
         return NextResponse.json(
             { status: "success", holdings },
             { status: 200 }

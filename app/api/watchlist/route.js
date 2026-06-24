@@ -33,7 +33,6 @@ export async function POST(req){
     try {
         await connectDB();
         const {stockId}=await req.json();
-        console.log(stockId)
         const user=await getUserFromCookie(req);
         
         if (!user) {
