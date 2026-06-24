@@ -17,8 +17,8 @@ export async function PATCH(req){
         }
         const {amount}=await req.json()
 
-        const depositedAmount=Number(amount);
-        if(!depositedAmount || depositedAmount<=0){
+        const withdrawAmount=Number(amount);
+        if(!withdrawAmount || withdrawAmount<=0){
             return NextResponse.json(
               { message: "Invalid amount" },
               { status: 400 }
@@ -28,24 +28,25 @@ export async function PATCH(req){
 
         const userDoc = await User.findById(user._id);
 
-        if(userDoc.cash<depositedAmount){
+        if(userDoc.cash<withdrawAmount){
           return NextResponse.json(
-            {status:400 ,message:"Insufficient Funds"}
+           
+            { message:"Insufficient Funds"},
+            {status:400},
           )
         }
 
        const updated=await User.findByIdAndUpdate(user._id,
-        {$inc:{cash:-depositedAmount}},
+        {$inc:{cash:-withdrawAmount}},
         {returnDocument:"after"})
         .select("-password");
 
-        console.log(updated)
-        await Transaction.create({
+        const transaction=await Transaction.create({
                 userId: user._id,
                 type: "WITHDRAW",
-                totalAmount: depositedAmount
+                totalAmount: withdrawAmount
               });
-       return NextResponse.json(updated)
+        return NextResponse.json({ user:updated,transaction},{status:200})
     }
     catch (err) {
         console.log(err); 

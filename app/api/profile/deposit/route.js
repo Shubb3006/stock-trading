@@ -31,12 +31,12 @@ export async function PATCH(req){
         {new:true})
         .select("-password");
 
-        await Transaction.create({
+        const transaction=await Transaction.create({
                 userId: user._id,
                 type: "DEPOSIT",
                 totalAmount: depositedAmount
               });
-       return NextResponse.json(updated)
+        return NextResponse.json({user:updated,transaction},{status:200})
     }
     catch (err) {
         console.log(err); 

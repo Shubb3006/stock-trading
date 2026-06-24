@@ -106,7 +106,10 @@ const page = () => {
     ? history24h.totalValue + (history24h.cash || 0)
     : currentValue;
 
-  
+  console.log("CurrentValue", currentValue);
+  console.log("oldValue", oldValue);
+  console.log("deposits", deposits);
+  console.log("withdrawals", withdrawals);
   const dayPnl = currentValue - oldValue - deposits + withdrawals;
 
   const dayPnlPercent =
@@ -120,10 +123,6 @@ const page = () => {
     invested: item.totalInvested,
     value: item.totalValue,
   }));
-  // console.log(portfolioHistory);
-  // console.log(chartData);
-
-  console.log(portfolioAnalysis);
 
   return (
     <div className="min-h-[calc(100vh-64px)] bg-base-200">

@@ -23,7 +23,7 @@ export async function  GET(req){
               { status: 404 }
             );
           }
-        return NextResponse.json(userDetail)
+        return NextResponse.json({status:200,user:userDetail})
     }catch (err) {
         console.log(err);
         return NextResponse.json(
@@ -53,7 +53,7 @@ export async function PATCH(req){
         {$set:updatedData},
         {new:true})
         .select("-password");
-        
+
        return NextResponse.json(updated)
     }
     catch (err) {

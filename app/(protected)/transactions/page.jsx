@@ -110,7 +110,11 @@ const page = () => {
                         </td>
 
                         <td>{t.quantity ?? "-"}</td>
-                        <td>₹{t?.price?.toLocaleString() ?? "-"}</td>
+                        <td>
+                          {t.type === "SELL" || t.type === "BUY"
+                            ? (t?.totalAmount || 0).toLocaleString()
+                            : "-"}
+                        </td>
                         <td>₹{(t?.totalAmount || 0).toLocaleString()}</td>
                         <td>
                           {t.type === "SELL" ? (

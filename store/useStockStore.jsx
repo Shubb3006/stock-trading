@@ -20,6 +20,7 @@ export const useStockStore = create((set) => ({
       set({
         fetchingHistory: true,
       });
+
       const res = await axiosInstance.get(`/stocks/${symbol}/history`);
 
       set({
