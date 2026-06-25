@@ -1,6 +1,7 @@
 "use client";
 import DashboardSkeleton from "@/app/components/skeletons/DashboardSkeleton";
 import { useTransactionsStore } from "@/store/useTransactionsStore";
+import { Loader2 } from "lucide-react";
 import React, { useEffect, useMemo, useState } from "react";
 
 const page = () => {
@@ -9,13 +10,22 @@ const page = () => {
   const { getAllTransactions, transactions, isFetchingTransactions } =
     useTransactionsStore();
   useEffect(() => {
-    getAllTransactions(filter);
-  }, [filter]);
-  
+    getAllTransactions("ALL");
+  }, []);
 
   const totalRealizedPL = transactions
     .filter((t) => t.type === "SELL")
     .reduce((acc, t) => acc + (t.realizedPnl || 0), 0);
+
+  const filteredTransactions = useMemo(() => {
+    if (filter === "ALL") return transactions;
+    if (filter === "CASH")
+      return transactions.filter(
+        (t) => t.type === "DEPOSIT" || t.type === "WITHDRAW"
+      );
+    if (filter === "TRADES")
+      return transactions.filter((t) => t.type === "BUY" || t.type === "SELL");
+  }, [transactions, filter]);
 
   const isInitialLoad = isFetchingTransactions && transactions.length === 0;
 
@@ -35,6 +45,7 @@ const page = () => {
             <option value="TRADES">Trades</option>
             <option value="CASH">Cash</option>
           </select>
+
           <div className="text-right">
             <p className="text-sm opacity-70">Total Realized P&L</p>
             <p
@@ -48,8 +59,8 @@ const page = () => {
           </div>
         </div>
         <div className="card bg-base-100 shadow-lg">
-          <div className="card-body">
-            {transactions.length === 0 ? (
+          <div className="card-body ">
+            {filteredTransactions.length === 0 ? (
               <div className="text-center py-10">
                 <p className="text-lg font-semibold">No Transactions Yet</p>
                 <p className="opacity-70">
@@ -57,7 +68,9 @@ const page = () => {
                 </p>
               </div>
             ) : (
-              <div className="overflow-x-auto">
+              <div
+                className={`isFiltering ? "opacity-60" : "" overflow-x-auto`}
+              >
                 <table className="table">
                   <thead>
                     <tr>
@@ -72,7 +85,7 @@ const page = () => {
                   </thead>
 
                   <tbody>
-                    {transactions.map((t) => (
+                    {filteredTransactions.map((t) => (
                       <tr key={t._id}>
                         <td>
                           <span
