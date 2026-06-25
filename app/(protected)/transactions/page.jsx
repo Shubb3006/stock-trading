@@ -4,28 +4,22 @@ import { useTransactionsStore } from "@/store/useTransactionsStore";
 import React, { useEffect, useMemo, useState } from "react";
 
 const page = () => {
+  const [filter, setFilter] = useState("ALL");
+
   const { getAllTransactions, transactions, isFetchingTransactions } =
     useTransactionsStore();
   useEffect(() => {
-    if (transactions.length === 0) getAllTransactions();
-  }, [transactions.length]);
-  const [filter, setFilter] = useState("ALL");
+    getAllTransactions(filter);
+  }, [filter]);
+  
 
   const totalRealizedPL = transactions
     .filter((t) => t.type === "SELL")
     .reduce((acc, t) => acc + (t.realizedPnl || 0), 0);
 
-  const filteredTransactions = useMemo(() => {
-    return transactions.filter((t) => {
-      if (filter === "ALL") return true;
-      if (filter === "TRADES") return t.type === "SELL" || t.type === "BUY";
-      if (filter === "CASH")
-        return t.type === "DEPOSIT" || t.type === "WITHDRAW";
-      return true;
-    });
-  }, [transactions, filter]);
+  const isInitialLoad = isFetchingTransactions && transactions.length === 0;
 
-  if (isFetchingTransactions) return <DashboardSkeleton />;
+  if (isInitialLoad) return <DashboardSkeleton />;
 
   return (
     <div className="min-h-[calc(100vh-64px)] bg-base-200">
@@ -55,7 +49,7 @@ const page = () => {
         </div>
         <div className="card bg-base-100 shadow-lg">
           <div className="card-body">
-            {filteredTransactions.length === 0 ? (
+            {transactions.length === 0 ? (
               <div className="text-center py-10">
                 <p className="text-lg font-semibold">No Transactions Yet</p>
                 <p className="opacity-70">
@@ -78,7 +72,7 @@ const page = () => {
                   </thead>
 
                   <tbody>
-                    {filteredTransactions.map((t) => (
+                    {transactions.map((t) => (
                       <tr key={t._id}>
                         <td>
                           <span

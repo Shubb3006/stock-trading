@@ -6,12 +6,13 @@ export const useTransactionsStore = create((set) => ({
   transactions: [],
   isFetchingTransactions: false,
 
-  getAllTransactions: async () => {
+  getAllTransactions: async (type = "") => {
     try {
       set({ isFetchingTransactions: true });
-      const res = await axiosInstance.get(`/transactions`);
+      const res = await axiosInstance.get(`/transactions?type=${type}`);
       set({ transactions: res.data.transactions });
     } catch (error) {
+      console.log(error.message);
       toast.error(error.response?.data?.message || "Something went wrong");
     } finally {
       set({ isFetchingTransactions: false });
