@@ -71,14 +71,6 @@ const Navbar = () => {
                   </Link>
                 </li>
 
-                <li className="bg-primary  px-2 py-1">
-                  <span className="font-medium text-white">
-                    Hi,{" "}
-                    {authUser.name.charAt(0).toUpperCase() +
-                      authUser.name.slice(1).toLowerCase()}
-                  </span>
-                </li>
-
                 <li>
                   <button
                     onClick={handleLogout}
@@ -172,14 +164,6 @@ const Navbar = () => {
                     <Link href="/profile" className={linkClass("/profile")}>
                       My Profile
                     </Link>
-                  </li>
-
-                  <li className="bg-primary px-2 py-1">
-                    <span className="font-medium">
-                      Hi,{" "}
-                      {authUser.name.charAt(0).toUpperCase() +
-                        authUser.name.slice(1).toLowerCase()}
-                    </span>
                   </li>
 
                   <li>

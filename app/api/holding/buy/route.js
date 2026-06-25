@@ -75,7 +75,7 @@ export async function POST(req) {
         averageBuyPrice: stock.currentPrice,
       });
     }
-    await Transaction.create({
+    const transaction=await Transaction.create({
         userId: user._id,
         stockId,
         type: "BUY",
@@ -94,6 +94,7 @@ export async function POST(req) {
       {
         status: "success",
         holding:updatedHolding,
+        transaction
       },
       { status: 200 }
     );

@@ -45,7 +45,7 @@ export const useHoldingStore = create((set) => ({
           };
         }
       });
-      await useTransactionsStore.getState().getAllTransactions();
+      useTransactionsStore.getState().addTransaction(res.data.transaction);
       await useAuthStore.getState().refreshUser();
 
       toast.success("Stock Bought");
@@ -78,8 +78,9 @@ export const useHoldingStore = create((set) => ({
 
         return { holdings: updated };
       });
-
-      await useTransactionsStore.getState().getAllTransactions();
+      await useTransactionsStore
+        .getState()
+        .addTransaction(res.data.transaction);
       await useAuthStore.getState().refreshUser();
 
       toast.success("Stock sold");

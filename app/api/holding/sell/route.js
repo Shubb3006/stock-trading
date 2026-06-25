@@ -58,7 +58,7 @@ export async function POST(req){
         const sellPrice = holding.stockId.currentPrice;
         const pnl = sellQty * (sellPrice - holding.averageBuyPrice);
 
-        const tran=await Transaction.create({
+        const transaction=await Transaction.create({
             userId: user._id,
             stockId,
             type: "SELL",
@@ -76,7 +76,9 @@ export async function POST(req){
               status: "success",
               message: "Holding sold completely",
               holding: null,
-              pnl
+              pnl,
+              transaction
+
             });
           }
           
@@ -87,8 +89,9 @@ export async function POST(req){
         return NextResponse.json({
           status: "success",
           holding,
-          pnl
-        });
+          pnl,
+          transaction
+        },{status:200});
     } catch (error) {
         return NextResponse.json(
             {

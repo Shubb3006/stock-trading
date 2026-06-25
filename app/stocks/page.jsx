@@ -19,7 +19,9 @@ const page = () => {
     // return () => clearInterval(interval);
   }, [getStocks, refreshStocks]);
 
-  if (fetchingStocks) return <StocksPageSkeleton />;
+  if (fetchingStocks && stocks.length === 0) {
+    return <StocksPageSkeleton />;
+  }
 
   const filteredStocks = stocks.filter(
     (stock) =>
@@ -37,6 +39,7 @@ const page = () => {
       </div>
       <StockSearch search={search} setSearch={setSearch} />
       <div className="max-w-7xl bg-base-100 mx-auto px-4 py-12">
+
         {filteredStocks.length === 0 ? (
           <div className="text-center py-10">
             <p className="text-lg font-medium">No stocks found</p>

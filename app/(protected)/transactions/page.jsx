@@ -1,7 +1,6 @@
 "use client";
 import DashboardSkeleton from "@/app/components/skeletons/DashboardSkeleton";
 import { useTransactionsStore } from "@/store/useTransactionsStore";
-import { Loader2 } from "lucide-react";
 import React, { useEffect, useMemo, useState } from "react";
 
 const page = () => {

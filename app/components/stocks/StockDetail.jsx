@@ -24,7 +24,7 @@ const StockDetail = ({ stock }) => {
   const [range, setRange] = useState("1D");
   const pathname = usePathname();
 
-  const [quantity, setQuantity] = useState(1);
+  const [quantity, setQuantity] = useState("");
   const {
     buyStock,
     isBuyingStock,
@@ -117,9 +117,11 @@ const StockDetail = ({ stock }) => {
 
   async function handleBuy() {
     await buyStock({ quantity, stockId: stock._id });
+    setQuantity("");
   }
   async function handleSell() {
     await sellStock({ quantity, stockId: stock._id });
+    setQuantity("");
   }
 
   // const chartData = priceHistory.map((item) => ({
@@ -435,7 +437,9 @@ const StockDetail = ({ stock }) => {
                 <button
                   className="btn btn-primary flex-1"
                   onClick={handleBuy}
-                  disabled={isBuyingStock || isSellingStock || quantity <= 0}
+                  disabled={
+                    isBuyingStock || isSellingStock || Number(quantity) <= 0
+                  }
                 >
                   {isBuyingStock ? (
                     <Loader2 className="animate-spin" />
@@ -450,8 +454,8 @@ const StockDetail = ({ stock }) => {
                     disabled={
                       isSellingStock ||
                       isBuyingStock ||
-                      quantity <= 0 ||
-                      quantity > isHoldingThisStock.quantity
+                      Number(quantity) <= 0 ||
+                      Number(quantity) > isHoldingThisStock.quantity
                     }
                   >
                     {isSellingStock ? (
