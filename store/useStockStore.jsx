@@ -15,13 +15,16 @@ export const useStockStore = create((set) => ({
   priceHistory: [],
   fetchingHistory: false,
 
-  getPriceHistory: async (symbol) => {
+  getPriceHistory: async (symbol, range) => {
+    console.log(range);
     try {
       set({
         fetchingHistory: true,
       });
 
-      const res = await axiosInstance.get(`/stocks/${symbol}/history`);
+      const res = await axiosInstance.get(
+        `/stocks/${symbol}/history?range=${range}`
+      );
 
       set({
         priceHistory: res.data.history,
@@ -32,9 +35,11 @@ export const useStockStore = create((set) => ({
       set({ fetchingHistory: false });
     }
   },
-  refreshPriceHistory: async (symbol) => {
+  refreshPriceHistory: async (symbol, range) => {
     try {
-      const res = await axiosInstance.get(`/stocks/${symbol}/history`);
+      const res = await axiosInstance.get(
+        `/stocks/${symbol}/history?range=${range}`
+      );
 
       set({
         priceHistory: res.data.history,

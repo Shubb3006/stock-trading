@@ -28,18 +28,18 @@ export default function RootLayout({ children }) {
     >
       <body className="min-h-full flex flex-col">
         <AuthProvider>
-          <SocketProvider>
-            <Navbar />
-            {children}
+        <SocketProvider>
+        <Navbar />
+        {children}
 
-            <Toaster
-              position="top-center"
+        <Toaster
+         position="top-center"
               toastOptions={{
                 duration: 2000,
-              }}
-            />
-          </SocketProvider>
-        </AuthProvider>
+              }} 
+         />
+         </SocketProvider>
+        </AuthProvider> 
       </body>
     </html>
   );

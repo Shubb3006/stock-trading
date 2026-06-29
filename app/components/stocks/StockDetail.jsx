@@ -21,7 +21,7 @@ import { useAiStore } from "@/store/useAiStore";
 import StockAnalysis from "./StockAnalysis";
 
 const StockDetail = ({ stock }) => {
-  const [range, setRange] = useState("1D");
+  const [range, setRange] = useState("1HR");
   const pathname = usePathname();
 
   const [quantity, setQuantity] = useState("");
@@ -78,19 +78,19 @@ const StockDetail = ({ stock }) => {
     clearPriceHistory();
 
     getStocks();
-    getPriceHistory(stock.symbol);
+    getPriceHistory(stock.symbol, range);
     // conxnectSocket(stock.symbol);
 
     const interval = setInterval(() => {
       // refreshStocks();
-      refreshPriceHistory(stock.symbol);
+      refreshPriceHistory(stock.symbol, range);
     }, 5000);
 
     return () => {
       clearInterval(interval);
       clearAnalyzeStock();
     };
-  }, [stock.symbol]);
+  }, [stock.symbol, range]);
 
   const isInWatchList = watchList.some((w) => {
     const id = w.stockId?._id || w.stockId;
