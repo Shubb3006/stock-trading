@@ -6,7 +6,6 @@ import Stock from "@/models/stock.model";
 export async function GET(req, { params }) {
   try {
     await connectDB();
-    
   
     const { symbol } = await params;
     console.log(symbol)
@@ -76,7 +75,7 @@ export async function GET(req, { params }) {
     //     });
     //   }
 
-    return NextResponse.json({count:history.length, history});
+    return NextResponse.json({count:history.length, history},{statue:200});
   } catch (error) {
     return NextResponse.json(
       { message: error.message },
