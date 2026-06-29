@@ -44,6 +44,7 @@ const StockDetail = ({ stock }) => {
     fetchingHistory,
     refreshPriceHistory,
     clearPriceHistory,
+    clearHistoryCache,
   } = useStockStore();
   const {
     getWatchList,
@@ -75,9 +76,11 @@ const StockDetail = ({ stock }) => {
   }, [authUser, clearHoldings, getHoldings]);
 
   useEffect(() => {
+    getStocks();
+  }, []);
+  useEffect(() => {
     clearPriceHistory();
 
-    getStocks();
     getPriceHistory(stock.symbol, range);
     // conxnectSocket(stock.symbol);
 
@@ -91,6 +94,10 @@ const StockDetail = ({ stock }) => {
       clearAnalyzeStock();
     };
   }, [stock.symbol, range]);
+
+  useEffect(() => {
+    clearHistoryCache();
+  }, [stock.symbol]);
 
   const isInWatchList = watchList.some((w) => {
     const id = w.stockId?._id || w.stockId;
@@ -133,38 +140,37 @@ const StockDetail = ({ stock }) => {
     price: Number(item.price),
   }));
 
-  const filteredData = useMemo(() => {
-    const now = new Date();
+  // const filteredData = useMemo(() => {
+  //   const now = new Date();
 
-    return chartData.filter((item) => {
-      const date = new Date(item.time);
+  //   return chartData.filter((item) => {
+  //     const date = new Date(item.time);
 
-      switch (range) {
-        case "1HR":
-          return now - date <= 60 * 60 * 1000;
-        case "1D":
-          return now - date <= 24 * 60 * 60 * 1000;
+  //     switch (range) {
+  //       case "1HR":
+  //         return now - date <= 60 * 60 * 1000;
+  //       case "1D":
+  //         return now - date <= 24 * 60 * 60 * 1000;
 
-        case "5D":
-          return now - date <= 5 * 24 * 60 * 60 * 1000;
+  //       case "5D":
+  //         return now - date <= 5 * 24 * 60 * 60 * 1000;
 
-        case "1M":
-          return now - date <= 30 * 24 * 60 * 60 * 1000;
+  //       case "1M":
+  //         return now - date <= 30 * 24 * 60 * 60 * 1000;
 
-        case "1Y":
-          return now - date <= 365 * 24 * 60 * 60 * 1000;
+  //       case "1Y":
+  //         return now - date <= 365 * 24 * 60 * 60 * 1000;
 
-        case "5Y":
-          return now - date <= 5 * 365 * 24 * 60 * 60 * 1000;
+  //       case "5Y":
+  //         return now - date <= 5 * 365 * 24 * 60 * 60 * 1000;
 
-        default:
-          return true;
-      }
-    });
-  }, [chartData, range]);
+  //       default:
+  //         return true;
+  //     }
+  //   });
+  // }, [chartData, range]);
 
   const recentHistpry = priceHistory.slice(-40);
-  console.log(recentHistpry);
 
   async function toggleWishlist(stockId) {
     if (isInWatchList) {
@@ -276,7 +282,7 @@ const StockDetail = ({ stock }) => {
         </div>
 
         {!fetchingHistory ? (
-          <StockChart key={stock.symbol} data={filteredData} range={range} />
+          <StockChart key={stock.symbol} data={chartData} range={range} />
         ) : (
           <StockChartSkeleton />
         )}

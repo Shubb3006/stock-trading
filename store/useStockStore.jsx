@@ -3,7 +3,7 @@ import { socket } from "@/lib/socket";
 import toast from "react-hot-toast";
 import { create } from "zustand";
 
-export const useStockStore = create((set) => ({
+export const useStockStore = create((set, get) => ({
   stocks: [],
   intervalId: null,
   livePrices: {},
@@ -15,8 +15,15 @@ export const useStockStore = create((set) => ({
   priceHistory: [],
   fetchingHistory: false,
 
+  historyCache: {},
+
   getPriceHistory: async (symbol, range) => {
-    console.log(range);
+    const cacheKey = `${symbol}-${range}`;
+    const cache = get().historyCache;
+    if (cache[cacheKey]) {
+      set({ priceHistory: cache[cacheKey] });
+      return;
+    }
     try {
       set({
         fetchingHistory: true,
@@ -26,9 +33,13 @@ export const useStockStore = create((set) => ({
         `/stocks/${symbol}/history?range=${range}`
       );
 
-      set({
+      set((state) => ({
         priceHistory: res.data.history,
-      });
+        historyCache: {
+          ...state.historyCache,
+          [cacheKey]: res.data.history,
+        },
+      }));
     } catch (error) {
       console.log(error.message);
     } finally {
@@ -41,9 +52,15 @@ export const useStockStore = create((set) => ({
         `/stocks/${symbol}/history?range=${range}`
       );
 
-      set({
+      const cacheKey = `${symbol}-${range}`;
+
+      set((state) => ({
         priceHistory: res.data.history,
-      });
+        historyCache: {
+          ...state.historyCache,
+          [cacheKey]: res.data.history,
+        },
+      }));
     } catch (error) {
       console.log(error);
     }
@@ -65,6 +82,11 @@ export const useStockStore = create((set) => ({
   clearPriceHistory: async () => {
     set({
       priceHistory: [],
+    });
+  },
+  clearHistoryCache: () => {
+    set({
+      historyCache: {},
     });
   },
 

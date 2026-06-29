@@ -25,9 +25,7 @@ export async function GET(req, { params }) {
 
     let startDate;
     switch(range){
-      case "1HR":
-        startDate=new Date(Date.now()-60*60*1000);
-        break;
+     
 
       case "1D":
         startDate=new Date(Date.now()-24*60*60*1000);
@@ -50,6 +48,10 @@ export async function GET(req, { params }) {
       case "5Y":
         startDate = new Date();
         startDate.setFullYear(startDate.getFullYear() - 5);
+        break;
+
+      default:
+        startDate=new Date(Date.now()-60*60*1000);
         break;
     }
 
