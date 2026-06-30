@@ -3,6 +3,9 @@ import toast from "react-hot-toast";
 import { create } from "zustand";
 import { useHoldingStore } from "./useHoldingStore";
 import { usePortfolioStore } from "./useProtfolioStore";
+import { useWatchListStore } from "./useWatchListStore";
+import { useAiStore } from "./useAiStore";
+import { useProfilestore } from '@/store/usePorfileStore';
 
 export const useAuthStore = create((set) => ({
   authUser: null,
@@ -69,6 +72,11 @@ export const useAuthStore = create((set) => ({
       set({ authUser: null });
       useHoldingStore.getState().clearHoldings();
       usePortfolioStore.getState().clearPortfolio();
+      useProfilestore.getState().clearProfile();
+      useWatchListStore.getState().clearWatchList();
+      useAiStore.getState().clearAiChat();
+      useAiStore.getState().clearAnalyzeStock();
+      useAiStore.getState().clearPortfolioAnalyse();
       toast.success("Logout succesfull");
       return true;
     } catch (error) {

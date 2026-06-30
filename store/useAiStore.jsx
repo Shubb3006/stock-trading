@@ -31,6 +31,10 @@ export const useAiStore = create((set) => ({
     }
   },
 
+  clearPortfolioAnalyse:async()=>{
+    set({portfolioAnalysis:null});
+  },
+
   analyzeStock: async (stockData) => {
     try {
       set({ stockAnalysis: null });
@@ -48,6 +52,12 @@ export const useAiStore = create((set) => ({
     }
   },
 
+  clearAnalyzeStock: async () => {
+    set({ stockAnalysis: null });
+  },
+
+  
+
   aiChat: async ({ question, portfolio }) => {
     try {
       set({ isAnsweringQuestion: true });
@@ -62,7 +72,8 @@ export const useAiStore = create((set) => ({
     }
   },
 
-  clearAnalyzeStock: async () => {
-    set({ stockAnalysis: null });
-  },
+  clearAiChat:async()=>{
+    set({aiChat:null});
+  }
+  
 }));

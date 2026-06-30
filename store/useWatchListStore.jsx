@@ -21,6 +21,10 @@ export const useWatchListStore = create((set) => ({
     }
   },
 
+  clearWatchList: async () => {
+    set({ watchList: [] });
+  },
+
   addToWatchList: async (data) => {
     try {
       set({ isAddingToWatchList: true });

@@ -19,6 +19,10 @@ export const useProfilestore = create((set) => ({
       set({ isFetchingProfile: false });
     }
   },
+
+  clearProfile:async()=>{
+    set({profile:null})
+  },
   addMoney: async ({ amount }) => {
     try {
       set({ isAddingMoney: true });
