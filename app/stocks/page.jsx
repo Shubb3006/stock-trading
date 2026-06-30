@@ -39,14 +39,13 @@ const page = () => {
       </div>
       <StockSearch search={search} setSearch={setSearch} />
       <div className="max-w-7xl bg-base-100 mx-auto px-4 py-12">
-
         {filteredStocks.length === 0 ? (
           <div className="text-center py-10">
             <p className="text-lg font-medium">No stocks found</p>
             <p className="text-gray-500">Try another search term.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 ">
+          <div className="grid grid-cols-1 m-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 ">
             {filteredStocks.map((stock) => (
               <StockCard key={stock._id} stock={stock} />
             ))}

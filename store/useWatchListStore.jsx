@@ -14,7 +14,6 @@ export const useWatchListStore = create((set) => ({
       set({ isFetchingWatchList: true });
       const res = await axiosInstance.get("/watchlist");
       set({ watchList: res.data.watchlist });
-      console.log(res.data.watchlist);
     } catch (error) {
       console.log(error.message);
     } finally {
@@ -62,7 +61,6 @@ export const useWatchListStore = create((set) => ({
 
   connectSocket: () => {
     socket.on("priceUpdate", (updatedStocks) => {
-      console.log(updatedStocks);
       set((state) => ({
         watchList: state.watchList.map((item) => {
           const updatedStock = updatedStocks.find(

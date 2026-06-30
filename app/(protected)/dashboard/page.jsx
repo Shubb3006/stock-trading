@@ -106,10 +106,10 @@ const page = () => {
     ? history24h.totalValue + (history24h.cash || 0)
     : currentValue;
 
-  console.log("CurrentValue", currentValue);
-  console.log("oldValue", oldValue);
-  console.log("deposits", deposits);
-  console.log("withdrawals", withdrawals);
+  // console.log("CurrentValue", currentValue);
+  // console.log("oldValue", oldValue);
+  // console.log("deposits", deposits);
+  // console.log("withdrawals", withdrawals);
   const dayPnl = currentValue - oldValue - deposits + withdrawals;
 
   const dayPnlPercent =

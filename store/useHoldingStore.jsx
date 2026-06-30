@@ -3,8 +3,9 @@ import toast from "react-hot-toast";
 import { create } from "zustand";
 import { useTransactionsStore } from "./useTransactionsStore";
 import { useAuthStore } from "./useAuthStore";
+import { useProfilestore } from "./usePorfileStore";
 
-export const useHoldingStore = create((set) => ({
+export const useHoldingStore = create((set, get) => ({
   holdings: [],
   isFetchingHoldings: false,
   isBuyingStock: false,
@@ -45,8 +46,9 @@ export const useHoldingStore = create((set) => ({
           };
         }
       });
-      useTransactionsStore.getState().addTransaction(res.data.transaction);
-      await useAuthStore.getState().refreshUser();
+      console.log(res.data);
+      await useTransactionsStore.getState().addTransaction(res.data.transaction);
+      await useProfilestore.getState().getProfileInfo();
 
       toast.success("Stock Bought");
     } catch (error) {
@@ -81,7 +83,7 @@ export const useHoldingStore = create((set) => ({
       await useTransactionsStore
         .getState()
         .addTransaction(res.data.transaction);
-      await useAuthStore.getState().refreshUser();
+      await useProfilestore.getState().getProfileInfo();
 
       toast.success("Stock sold");
     } catch (error) {

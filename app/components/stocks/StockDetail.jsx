@@ -16,7 +16,7 @@ import StockPrice from "./StockPrice";
 import StockChart from "./StockChart";
 import StockChartSkeleton from "../skeletons/StockChartSkeleton";
 import { useWatchListStore } from "@/store/useWatchListStore";
-import { usePathname } from "next/navigation";
+import { useParams, usePathname, useSearchParams } from "next/navigation";
 import { useAiStore } from "@/store/useAiStore";
 import StockAnalysis from "./StockAnalysis";
 
@@ -423,7 +423,7 @@ const StockDetail = ({ stock }) => {
               <div className="bg-base-200 rounded-lg p-4 mt-4">
                 <div className="flex justify-between">
                   <span>Price per Share</span>
-                  <span>₹{stock?.currentPrice.toLocaleString()}</span>
+                  <span>₹{liveStock?.currentPrice.toLocaleString()}</span>
                 </div>
 
                 <div className="flex justify-between mt-2">
